@@ -13,8 +13,12 @@ permissions:
 
 jobs:
   host:
-    name: Host tests
+    name: Host tests (${{ matrix.variant }})
     runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        variant: [hh2, hh3]
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
@@ -22,17 +26,21 @@ jobs:
           persist-credentials: false
       - name: Install host tools
         run: sudo apt-get update && sudo apt-get install -y g++ python3
-      - run: make test
+      - run: make TARGET=${{ matrix.variant }} test
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
-          name: host-tests
-          path: dist/tests-host.json
+          name: host-tests-${{ matrix.variant }}
+          path: dist/${{ matrix.variant }}/tests-host.json
           if-no-files-found: error
 
   calculator:
-    name: Calculator build
+    name: Calculator build (${{ matrix.variant }})
     needs: host
     runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        variant: [hh2, hh3]
     container:
       image: ghcr.io/classpaddev/hollyhock-3@sha256:4381a460f8b19411552ac30f2aba73da38d3aba535412a66c69f8528fe94b49a
     env:
@@ -50,15 +58,15 @@ jobs:
           git config --global --add safe.directory "$GITHUB_WORKSPACE/meta/hollyhock-3"
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
-          name: host-tests
-          path: dist
-      - name: Build launcher and test app
-        run: make -j2 launcher smoke
-      - run: make target-test
-      - run: make package
+          name: host-tests-${{ matrix.variant }}
+          path: dist/${{ matrix.variant }}
+      - name: Build launcher and test apps
+        run: make -j2 TARGET=${{ matrix.variant }} launcher smoke
+      - run: make TARGET=${{ matrix.variant }} target-test
+      - run: make TARGET=${{ matrix.variant }} package
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
-          name: launcher-os7002
+          name: launcher-${{ matrix.variant }}
           path: dist/release/*
           if-no-files-found: error
 
@@ -75,12 +83,15 @@ jobs:
           persist-credentials: false
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
-          name: launcher-os7002
+          pattern: launcher-*
+          merge-multiple: true
           path: release
       - name: Check release files
         working-directory: release
-        run: sha256sum --check SHA256SUMS.txt
-      - name: Publish tested package
+        run: |
+          sha256sum --check SHA256SUMS-hh2.txt
+          sha256sum --check SHA256SUMS-hh3.txt
+      - name: Publish tested packages
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}

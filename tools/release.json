@@ -1,29 +1,49 @@
 {
-  "name": "Hollyhock 3 Custom Launcher",
-  "version": "0.5",
-  "tag": "v0.5.0",
-  "target_os": "02.01.7002.0001",
+  "name": "Hollyhock Custom Launcher",
+  "version": "0.6",
+  "tag": "v0.6.0",
   "upstream": {
     "yal_commit": "a7bc33dc1c4c0779fd400eb1394145dd705076b5",
     "hhk3_sdk_commit": "1e483e395391d50d9bd2d21cee4beecc7589fb1c"
   },
   "toolchain_image": "ghcr.io/classpaddev/hollyhock-3@sha256:4381a460f8b19411552ac30f2aba73da38d3aba535412a66c69f8528fe94b49a",
   "hardware_tested": false,
-  "exit_contract": {
-    "os_guard": "2023.0209.1500",
-    "caller": "0x8015c898",
-    "normal_continuation": "0x8015cf94",
-    "object_vtable_offset": "0x4c",
-    "finish_slot": "0x18c",
-    "cancel_result": "0x03eb",
-    "source_image_sha256": "62c95f96df2c238282a4b208b9a970dbfbfd53c4aa70b938ae5cbb9c4cd06973"
-  },
   "history": {
     "backend": "MCS",
     "folder": "hhlaunch",
-    "variable": "recent",
     "capacity": 5,
     "max_record_bytes": 512,
     "write_policy": "after successful app load, before execution"
+  },
+  "variants": {
+    "hh2": {
+      "os_version": "2000",
+      "target_os": "02.01.2000.0000",
+      "os_guard": "2017.0512.1515",
+      "formats": [
+        "HHK ELF (.hhk)",
+        "native BIN (.bin)"
+      ],
+      "history_variable": "recent2",
+      "return_mode": "native OS completion dialog"
+    },
+    "hh3": {
+      "os_version": "7002",
+      "target_os": "02.01.7002.0001",
+      "os_guard": "2023.0209.1500",
+      "formats": [
+        "HH3 ELF (.hh3)"
+      ],
+      "history_variable": "recent",
+      "exit_contract": {
+        "os_guard": "2023.0209.1500",
+        "caller": "0x8015c898",
+        "normal_continuation": "0x8015cf94",
+        "object_vtable_offset": "0x4c",
+        "finish_slot": "0x18c",
+        "cancel_result": "0x03eb",
+        "source_image_sha256": "62c95f96df2c238282a4b208b9a970dbfbfd53c4aa70b938ae5cbb9c4cd06973"
+      }
+    }
   }
 }

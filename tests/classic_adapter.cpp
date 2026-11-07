@@ -1,3 +1,4 @@
+#include "variant_fixture.hpp"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Compile the real gui.cpp against the original SDK declarations. Only the
 // three display functions and GetInput are replaced with host fakes.
@@ -40,7 +41,7 @@ std::unique_ptr<char[]> copy(const char *s) {
 struct FakeApp final : Executable {
   int id;
   std::string file_path;
-  explicit FakeApp(int number) : id(number), file_path(number == 0 ? "\\fls0\\one.hh3" : number == 1 ? "\\fls0\\two.hh3" : "\\fls0\\app" + std::to_string(number) + ".hh3") {}
+  explicit FakeApp(int number) : id(number), file_path(number == 0 ? "\\fls0\\one" APP_EXT "" : number == 1 ? "\\fls0\\two" APP_EXT "" : "\\fls0\\app" + std::to_string(number) + "" APP_EXT "") {}
   void load() override { assert(false); }
   void unload() override { assert(false); }
   int execute() override { assert(false); return 0; }
@@ -73,7 +74,7 @@ int main() {
       touch(TOUCH_DOWN, 50, 74 + 28 + 10), touch(TOUCH_UP, -500, -500),
       touch(TOUCH_DOWN, 50, 95), touch(TOUCH_UP, 0, 0)});
     auto chosen = do_gui(list); assert(chosen && static_cast<FakeApp *>(chosen.get())->id == 1 && position == 6);
-    std::cout << "PASS real adapter: short dropdown/Run taps with invalid lift coordinates choose second HH3 entry\n"; }
+    std::cout << "PASS real adapter: short dropdown/Run taps with invalid lift coordinates choose second app entry\n"; }
   { auto list = apps(); reset({key(KEYCODE_EXE, KEY_RELEASED), key(KEYCODE_DOWN), key(KEYCODE_EXE)});
     auto chosen = do_gui(list); assert(chosen && static_cast<FakeApp *>(chosen.get())->id == 1 && position == 3);
     std::cout << "PASS real adapter: released EXE ignored; Down + EXE selects intended app\n"; }

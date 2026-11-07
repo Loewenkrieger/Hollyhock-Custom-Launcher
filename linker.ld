@@ -249,3 +249,5 @@ SECTIONS
   .gnu.attributes 0 : { KEEP (*(.gnu.attributes)) }
   /DISCARD/ : { *(.note.GNU-stack) *(.gnu_debuglink) *(.gnu.lto_*) }
 }
+
+ASSERT(end <= 0x8cff0000, "Launcher overlaps app RAM")

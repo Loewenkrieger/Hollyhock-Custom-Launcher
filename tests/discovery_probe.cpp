@@ -2,6 +2,10 @@
 // Exercise production app discovery against the SDK declarations. Only file
 // enumeration and ELF execution/metadata are faked; no calculator code runs.
 #include "app_list.hpp"
+#include "target.hpp"
+#if LAUNCHER_HH2
+#include "loaders/hh2/loader.hpp"
+#endif
 #include "loaders/elf/loader.hpp"
 #include <cassert>
 #include <iostream>
@@ -20,7 +24,9 @@ File_Error next(int handle, char_const16_t *name, File_FindInfo *info) {
   while (cursor < files.size()) {
     const auto &entry = files[cursor++];
     // Simulate the OS wildcard selected by the production discovery function.
-    if (!entry.name.ends_with(patterns.back().substr(7))) continue;
+    const auto extension = patterns.back().substr(7);
+    if (entry.name.size() < extension.size() ||
+        !target::equals(std::string_view(entry.name).substr(entry.name.size() - extension.size()), extension)) continue;
     assert(entry.name.size() < 90);
     std::copy(entry.name.begin(), entry.name.end(), name);
     name[entry.name.size()] = 0;
@@ -35,7 +41,7 @@ File_Error first(const char_const16_t *pattern, int *handle,
   std::string text;
   for (; *pattern; ++pattern) text.push_back(static_cast<char>(*pattern));
   patterns.push_back(text); ++searches; cursor = 0; *handle = 42;
-  assert(text == "\\fls0\\*.hh3");
+  assert(text == (target::hh2 ? "\\fls0\\*.hhk" : "\\fls0\\*.hh3") || (target::hh2 && text == "\\fls0\\*.bin"));
   return next(*handle, name, info);
 }
 File_Error close_search(int handle) { assert(handle == 42); ++closes; return FILE_OK; }
@@ -47,7 +53,7 @@ std::vector<std::string> scan(std::vector<Entry> entries) {
   auto discovered = discover_apps();
   std::vector<std::string> paths;
   for (auto &app : discovered) paths.emplace_back(app->getPath().get());
-  assert(searches == 1 && closes == 1);
+  assert(searches == (target::hh2 ? 2 : 1) && closes == searches);
   return paths;
 }
 }
@@ -70,6 +76,16 @@ std::unique_ptr<char[]> ELFLoader::getAuthor() { return nullptr; }
 std::unique_ptr<char[]> ELFLoader::getDescription() { return nullptr; }
 
 int main() {
+#if LAUNCHER_HH2
+  assert((scan({{"zeta.bin"},{"run.bin"},{"RUN.BIN"},{"run-hh3-os7002.bin"},{"old.hh3"},{"alpha.hhk"}}) == std::vector<std::string>{"\\fls0\\alpha.hhk","\\fls0\\zeta.bin"}));
+  assert(scan({{"a.hh3"},{"run.bin"}}).empty());
+  assert((scan({{"folder.hhk",true},{".hidden.bin"},{"visible.hhk"}}) == std::vector<std::string>{"\\fls0\\visible.hhk"}));
+  std::vector<Entry> many;
+  for (int i=999;i>=0;--i) many.push_back({"app"+std::to_string(i)+(i%2?".hhk":".bin")});
+  const auto sorted=scan(std::move(many));
+  assert(sorted.size()==1000 && std::is_sorted(sorted.begin(),sorted.end()));
+  std::cout << "4/4 HH2 discovery checks passed: formats, launcher exclusion, filtering, 1000 apps\n";
+#else
   assert((scan({{"zeta.hh3"}, {"old.hhk"}, {"run.bin"}, {"alpha.hh3"}, {"readme.txt"}}) ==
           std::vector<std::string>{"\\fls0\\alpha.hh3", "\\fls0\\zeta.hh3"}));
   std::cout << "PASS discovery: mixed directory lists and sorts only HH3 apps\n";
@@ -84,4 +100,5 @@ int main() {
   assert(sorted.size() == 1000 && std::is_sorted(sorted.begin(), sorted.end()));
   std::cout << "PASS discovery: 1000 apps remain completely listed and sorted\n";
   std::cout << "4/4 discovery checks passed (mock file system; no app execution)\n";
+#endif
 }

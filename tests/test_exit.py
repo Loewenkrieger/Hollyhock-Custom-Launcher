@@ -7,7 +7,7 @@ The optional target test interprets the actual SH caller and compiled callback.
 It is not an emulator for the complete Casio OS or calculator hardware.
 """
 from pathlib import Path
-from sdk_path import sdk_include
+from sdk_path import sdk_include, target_flags
 import argparse
 import subprocess
 import tempfile
@@ -21,7 +21,7 @@ args = parser.parse_args()
 sdk = sdk_include(root)
 with tempfile.TemporaryDirectory() as temporary:
     binary = Path(temporary) / 'exit-probe'
-    subprocess.run(['g++', '-std=c++23', '-O1', '-g', '-Wall', '-Wextra', '-Werror', '-Wno-attributes',
+    subprocess.run(['g++', *target_flags(), '-std=c++23', '-O1', '-g', '-Wall', '-Wextra', '-Werror', '-Wno-attributes',
                     '-fsanitize=undefined', '-fno-sanitize-recover=all',
                     '-I' + str(root/'src'), '-I' + str(sdk), str(root/'tests/exit_probe.cpp'),
                     str(root/'src/exit_protocol.cpp'), str(root/'src/exit_result.cpp'),

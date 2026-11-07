@@ -6,7 +6,7 @@ import subprocess
 
 ROOT = Path(__file__).resolve().parents[1]
 MODULE = 'meta/hollyhock-3'
-ADDRESS = MODULE + '/versions/v02.01.7002.0001/addresses.json'
+ADDRESSES = [MODULE + '/versions/v' + os + '/addresses.json' for os in ['02.01.2000.0000','02.01.7002.0001']]
 
 
 def git(*args, cwd=ROOT):
@@ -22,7 +22,7 @@ def inventory():
     module_names = git('ls-files', '-z', cwd=ROOT / MODULE).split('\0')
     files.update(MODULE + '/' + name for name in module_names
                  if name.startswith('sdk/') or name == 'LICENSE')
-    files.add(ADDRESS)
+    files.update(ADDRESSES)
     return {'commit': git('rev-parse', 'HEAD'),
             'sdk_commit': git('rev-parse', 'HEAD', cwd=ROOT / MODULE),
             'dirty': bool(git('status', '--porcelain', '--untracked-files=normal')),
@@ -31,11 +31,11 @@ def inventory():
 
 def test_input_hash():
     paths = [ROOT / name for name in ['Makefile', 'linker.ld', 'custom-start.specs', 'convert_json.py']]
-    for directory in ['src', 'tests', 'smoke/hh3', MODULE + '/sdk']:
+    for directory in ['src', 'tests', 'smoke', 'tools', MODULE + '/sdk']:
         paths.extend(path for path in (ROOT / directory).rglob('*')
-                     if path.is_file() and (path.suffix in ['.cpp', '.hpp', '.h', '.c', '.S', '.py']
+                     if path.is_file() and (path.suffix in ['.cpp', '.hpp', '.h', '.c', '.S', '.py', '.ld', '.def', '.json']
                                             or path.name == 'Makefile'))
-    paths.append(ROOT / ADDRESS)
+    paths.extend(ROOT / address for address in ADDRESSES)
     digest = hashlib.sha256()
     for path in sorted(set(paths)):
         digest.update(path.relative_to(ROOT).as_posix().encode() + b'\0' + path.read_bytes() + b'\0')

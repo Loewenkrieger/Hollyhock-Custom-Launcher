@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "ui.hpp"
+#include "target.hpp"
 #include "font.hpp"
 #include <algorithm>
 #include <cstdlib>
@@ -283,11 +284,11 @@ void render(Canvas canvas, const State &s, const std::vector<AppInfo> &apps) {
     if (!a.description.empty()) info += "\n\n" + a.description;
     p.text({15, 127, 288, 360}, info, black, true);
   } else {
-    p.text({15, 127, 288, 360}, "No apps were found on your calculator.\n\nCopy .hh3 files to the root directory of the calculator's flash.", black, true);
+    p.text({15, 127, 288, 360}, target::empty_message, black, true);
   }
   p.fill({0, 503, 320, 2}, shadow);
-  p.text({8, 508, 120, 20}, "HHK3");
-  p.text({205, 508, 108, 20}, has_app ? "HH3  |  0.5" : "0.5");
+  p.text({8, 508, 120, 20}, target::name);
+  p.text({205, 508, 108, 20}, target::footer);
 
   if (!s.open) return;
   const auto box = s.popup();

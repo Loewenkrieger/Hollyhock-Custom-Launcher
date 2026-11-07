@@ -1,5 +1,12 @@
 # Änderungen
 
+## 0.6
+
+- Getrennte HH2- und HH3-Ausgaben mit gemeinsamer Oberfläche.
+- Native HHK-/BIN-Lader für HH2 auf OS 2000, mit Dateiprüfungen vor dem RAM-Zugriff.
+- Getrennte Verläufe und Buildordner, Testprogramme und Releasepakete für beide Varianten.
+- Matrix-Builds und automatisierte Prüfungen für HH2 und HH3.
+
 ## 0.5
 
 - SDK als festgesetztes Submodule; Build, Tests und Releasepakete über Make und GitHub Actions.

@@ -1,28 +1,28 @@
-# Hollyhock 3 Custom Launcher
+# Hollyhock Custom Launcher
 
-Ein klassischer Launcher für **HH3-Apps (`.hh3`)** auf dem Casio ClassPad II. Mit übersichtlicher App-Auswahl, Programminfos und Bedienung per Touch oder Tasten.
+Ein klassischer Launcher für den Casio ClassPad II – mit App-Auswahl, Programminfos, Touch- und Tastenbedienung. **Version 0.6** gibt es für HH2 und HH3.
 
-**Version 0.5** · Für bereits installiertes Hollyhock 3 auf **OS 02.01.7002.0001**.
+| Deine Installation | Apps | Download |
+| --- | --- | --- |
+| **HH3 · OS 02.01.7002.0001** | `.hh3` | [HH3-Paket](https://github.com/Loewenkrieger/Hollyhock-3-Custom-Launcher/releases/download/v0.6.0/hhk3-launcher-0.6-os7002.zip) |
+| **HH2 · OS 02.01.2000.0000** | `.hhk`, kompatible `.bin` | [HH2-Paket](https://github.com/Loewenkrieger/Hollyhock-3-Custom-Launcher/releases/download/v0.6.0/hhk2-launcher-0.6-os2000.zip) |
 
 ## Installation
 
-[run.bin herunterladen](https://github.com/Loewenkrieger/Hollyhock-3-Custom-Launcher/releases/download/v0.5.0/run.bin) · [Komplettpaket](https://github.com/Loewenkrieger/Hollyhock-3-Custom-Launcher/releases/download/v0.5.0/hhk3-launcher-0.5-os7002.zip)
-
-1. Die bisherige `run.bin` sichern.
-2. Die neue `run.bin` und deine `.hh3`-Apps ins Hauptverzeichnis des Taschenrechner-Laufwerks kopieren.
-3. Sicher auswerfen, USB trennen und den Launcher über das System-Menü öffnen.
-
-Ein Firmwareupdate ist dafür nicht nötig.
+1. Das Paket für deine vorhandene Hollyhock-/OS-Version herunterladen.
+2. Die bisherige `run.bin` sichern und durch die `run.bin` aus dem Paket ersetzen. Apps ebenfalls ins Hauptverzeichnis kopieren.
+3. Sicher auswerfen, USB trennen und den Launcher wie gewohnt öffnen.
 
 ## Bedienung
 
-App im Dropdown auswählen und mit **Run** starten. **Close**, **X** oder **Clear** schließen den Launcher. Mit den Pfeiltasten und **EXE** geht es auch ohne Touch.
+App im Dropdown auswählen und mit **Run** starten. **Close**, **X** oder **Clear** schließen den Launcher. Pfeiltasten und **EXE** funktionieren ebenfalls.
 
-Die fünf zuletzt gestarteten Apps stehen mit einem **\*** oben in der Liste. Die letzte App ist direkt ausgewählt – zum erneuten Starten genügt **EXE**. Der Verlauf bleibt beim nächsten Öffnen erhalten.
+Die fünf zuletzt gestarteten Apps stehen mit einem **\*** oben; die letzte App ist vorausgewählt. Der Verlauf bleibt beim nächsten Öffnen erhalten.
 
 ![Vorschau der Oberfläche](docs/preview/classic-closed.png)
 
+Die neue HH2-Ausgabe ist automatisiert geprüft; ihr Test am echten ClassPad steht noch aus.
 
-[Ausführliche Anleitung](docs/README_DE.md) · [Build und Tests](docs/BUILD.md) · [Prüfbericht](docs/TEST-REPORT.txt)
+[Anleitung](docs/README_DE.md) · [Build und Tests](docs/BUILD.md) · [Prüfbericht](docs/TEST-REPORT.txt)
 
-Basierend auf [YAL](https://github.com/ClasspadDev/yal) und dem [Hollyhock-3-SDK](https://github.com/ClasspadDev/hollyhock-3).
+Basierend auf [YAL](https://github.com/ClasspadDev/yal), dem [Hollyhock-SDK](https://github.com/ClasspadDev/hollyhock-3) und den Dateiformaten von [Hollyhock 2](https://github.com/SnailMath/hollyhock-2).

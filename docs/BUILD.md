@@ -1,85 +1,104 @@
 # Build und Tests
 
-Der Launcher-Code liegt unter `src/`. Das unveränderte HH3-SDK ist als Submodule
-unter `meta/hollyhock-3` auf Commit `1e483e395391d50d9bd2d21cee4beecc7589fb1c`
-festgesetzt. Die Makefile liest `versions/v02.01.7002.0001/addresses.json` direkt
-aus diesem Submodule; eine zweite Kopie oder ein Windows-Symlink ist nicht nötig.
-Der Build benötigt weder Pillow noch uGFX.
+Die gemeinsame Oberfläche liegt unter `src/classic/`. App-Suche, Verlaufsformat und
+UI-Hinweise werden über `src/target.hpp` für HH2 oder HH3 ausgewählt. Die App-Lader
+liegen getrennt unter `src/loaders/hh2/` und `src/loaders/elf/`.
 
-## Quellen holen
+Beide Ausgaben nutzen das unveränderte SDK-Submodule `meta/hollyhock-3` auf Commit
+`1e483e395391d50d9bd2d21cee4beecc7589fb1c`. Es enthält OS-Adressen für 2000 und 7002.
+Die Makefile liest die passende `addresses.json` direkt daraus.
+
+## Quellen und Voraussetzungen
 
 ```sh
 git clone --recurse-submodules https://github.com/Loewenkrieger/Hollyhock-3-Custom-Launcher.git
 cd Hollyhock-3-Custom-Launcher
 ```
 
-Bei einem bestehenden Checkout genügt `git submodule update --init`.
-Das vollständige Releasepaket enthält die benötigten SDK-Quellen bereits unter
-`source/meta/hollyhock-3`; dort zuvor nach `source/` wechseln. Die automatisch von
-GitHub angehängten Source-Archive enthalten keine ausgefüllten Submodules.
+Bei einem bestehenden Checkout: `git submodule update --init`. Im vollständigen
+Releasepaket sind die nötigen SDK-Quellen bereits unter `source/` enthalten.
+GitHubs automatisch erzeugte Source-Archive füllen Submodules nicht aus.
 
-## Hosttests
+Für Hosttests: Linux, Python 3, g++ mit C++23 und ASan/UBSan.
+Für Calculator-Builds zusätzlich `sh4a_nofpueb-elf-g++` 15.2.0 samt Werkzeugen.
+Das festgesetzte Toolchain-Image steht in `tools/release.json` und im Workflow.
 
-Benötigt werden Linux, Python 3 und g++ mit C++23 sowie AddressSanitizer und
-UndefinedBehaviorSanitizer:
-
-```sh
-make test
-```
-
-Die sechs Hosttests unter `tests/` lassen sich auch einzeln starten.
-Sie prüfen Oberfläche, Eingaben, HH3-App-Suche, Metadaten, Verlauf, Startablauf
-und den Rückgabeweg. Die Ausgabe wird zusätzlich in `dist/tests-host.json`
-gespeichert. Messmethode und Ergebnisse stehen unter [PERFORMANCE.md](PERFORMANCE.md).
-
-## Calculator-Build
-
-`sh4a_nofpueb-elf-g++` 15.2.0 und die zugehörigen Werkzeuge müssen im PATH liegen.
-Die Pipeline verwendet das festgesetzte Image aus `tools/release.json`.
-In diesem Container oder mit derselben lokal verfügbaren Toolchain:
+## HH3 bauen
 
 ```sh
-make -j2 launcher smoke
-make target-test
-make package
+make TARGET=hh3 test
+make -j2 TARGET=hh3 launcher smoke
+make TARGET=hh3 target-test
+make TARGET=hh3 package
 ```
 
-Das SDK wird automatisch gebaut. `SDK_DIR` kann bei Bedarf überschrieben werden;
-die Pipeline setzt es ausdrücklich auf `meta/hollyhock-3/sdk`.
+Ergebnisse: `dist/hh3/run.7002.bin`, Debug-ELF und `smoke/hh3/launcher-test.hh3`.
 
-Ergebnisse: `dist/run.7002.bin`, `dist/run.7002.elf` und
-`smoke/hh3/launcher-test.hh3`. Auf dem Taschenrechner muss die Launcher-Datei
-`run.bin` heißen. `make target-test` prüft den kompilierten Rückgabeadapter sowie
-die [MCS-Typausgabe](MCS-ABI.md) und schreibt `dist/tests-target.json`.
+## HH2 bauen
 
-`make package` setzt erfolgreiche Host- und Zielprüfungen für die aktuellen
-Quellen und das aktuelle Binary voraus. Unter `dist/release/` entstehen
-`run.bin`, das Komplettpaket mit SDK-Quellen, `BUILD.json` und `SHA256SUMS.txt`.
-Die Metadaten enthalten Quellrevisionen, Compiler, Prüfsummen und Teststatus.
-`make clean` entfernt Launcher- und Test-App-Builddateien; das SDK lässt sich
-mit `make -C meta/hollyhock-3/sdk clean` separat bereinigen.
+```sh
+make TARGET=hh2 test
+make -j2 TARGET=hh2 launcher smoke
+make TARGET=hh2 target-test
+make TARGET=hh2 package
+```
 
-## GitHub Actions und Releases
+Ergebnisse: `dist/hh2/run.2000.bin`, Debug-ELF und
+`smoke/hh2/launcher-test.hhk` sowie `launcher-test.bin`.
+`make hh2` und `make hh3` sind Kurzformen für Build und Test-App der jeweiligen
+Variante. Ohne Angabe bleibt HH3 voreingestellt. Build- und Abhängigkeitsordner sind
+getrennt; die gemeinsame SDK-Bibliothek wird automatisch gebaut.
 
-`.github/workflows/build.yml` läuft bei Pushes auf `main`, Pull Requests und
-manuellem Start. Nach Hosttests, SH-Build, Zielprüfungen und Paketprüfung stehen
-die Dateien als Actions-Artefakt bereit. Bei einem Versionstag wie `v0.5.0`
-werden sie zusätzlich als GitHub Release veröffentlicht. Der Tag muss dem
-Eintrag `tag` in `tools/release.json` entsprechen. Nur dieser Release-Job hat
-Schreibrechte; Pull Requests veröffentlichen nichts.
+`make TARGET=… clean` entfernt die Builddateien dieser Variante.
+Das SDK separat mit `make -C meta/hollyhock-3/sdk clean` bereinigen.
 
-## Schrift neu erzeugen
+## Prüfungen und Pakete
 
-Nur zum Neuerzeugen der Schrift wird Pillow benötigt:
+Host- und Zielprüfungen schreiben ihre tatsächlichen Ausgaben nach
+`dist/hh2/tests-*.json` bzw. `dist/hh3/tests-*.json`.
+Der Paketbau akzeptiert nur erfolgreiche Berichte für dieselbe Variante,
+dieselben Quelldateien und dasselbe Ziel-Binary.
+
+Unter `dist/release/` entstehen pro Variante ein eindeutig benanntes Binary,
+Komplettpaket, `BUILD-hh2.json`/`BUILD-hh3.json` und eine eigene SHA256-Liste.
+Im Komplettpaket heißt der Launcher bereits `run.bin`; beide enthalten den
+vollständigen Quellstand einschließlich SDK und beider OS-Adressdateien.
+
+GitHub Actions prüft beide Varianten in einer Matrix. Ein Versionstag passend zu
+`tools/release.json` veröffentlicht beide Pakete gemeinsam. Nur der Release-Job
+hat Schreibrechte. Auf `main` und bei Pull Requests entstehen Build-Artefakte.
+
+## HH2-Ladevertrag
+
+HHK-Dateien sind native statische SuperH-ELF32-Dateien mit Big-Endian-Daten.
+Der Lader prüft Section-Tabelle, Metadaten, Eintrittspunkt, Überlappungen und
+Speichergrenzen vollständig vor dem ersten RAM-Schreibzugriff. PROGBITS werden
+kopiert, NOBITS werden genullt. Auch gestrippte HHKs sind möglich, sofern ihre
+Section-Tabelle erhalten bleibt. Absolute OS-Adressen werden unverändert benutzt.
+
+BIN-Dateien folgen dem HH2-Format: Ladeadresse als Big-Endian-Wert bei Byte 12,
+falls dieses Feld mit `0x8c` beginnt; sonst `0x8cff0000`. Der Eintritt liegt am
+Dateianfang. Optionale vier Textfelder ab Byte 16 liefern Name, Beschreibung,
+Autor und Version. Fehlende Textfelder führen zum Dateinamen als Anzeige.
+
+Zulässige App-Bereiche: `0x8c200000–0x8cfcffff` und `0x8cff0000–0x8cffffff`.
+Der OS-Arbeitsbereich und der Launcher bleiben ausgespart. Diese Bereichsprüfung
+ersetzt keine Isolation einer laufenden App. Geladener Code erhält wie beim
+ursprünglichen HH2 direkten Hardwarezugriff. Cache-Zeilen werden vor dem Aufruf
+zurückgeschrieben und invalidiert.
+
+HH2 benutzt beim Beenden den ursprünglichen nativen Casio-Abschlussdialog.
+Der geprüfte stille OS-7002-Rückgabeadapter bleibt für HH3 erhalten.
+
+## Verlauf und Schrift
+
+MCS-Ordner: `hhlaunch`. HH3 nutzt `recent` mit `HH3REC1`; HH2 nutzt
+`recent2` mit `HH2REC1`. Höchstens fünf Pfade, 512 Bytes, Schreiben erst nach
+erfolgreichem App-Laden. Die bestehende HH3-Historie bleibt lesbar. Einzelheiten
+zur Byte-Typausgabe: [MCS-ABI.md](MCS-ABI.md).
+
+Nur zum Neuerzeugen der mitgelieferten Schrift wird Pillow benötigt:
 
 ```sh
 python3 generate_classic_font.py assets/DejaVuSans.ttf src/classic/font.hpp
 ```
-
-## Verlaufsformat
-
-Der Launcher verwendet ausschließlich den MCS-Ordner `hhlaunch` und die
-String-Variable `recent`. Der auf 512 Bytes begrenzte Eintrag beginnt mit
-`HH3REC1`, enthält höchstens fünf Dateipfade und endet mit einem NUL-Byte.
-Fehler beim Lesen oder Schreiben beeinflussen den App-Start nicht. Geschrieben
-wird einmal nach erfolgreichem Laden einer App, vor deren Ausführung.

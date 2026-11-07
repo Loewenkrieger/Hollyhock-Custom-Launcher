@@ -12,3 +12,7 @@ __pycache__/
 /smoke/hh3/obj/
 /smoke/hh3/.deps/
 *.map
+
+/smoke/hh2/*.hhk
+/smoke/hh2/*.bin
+/smoke/hh2/*.elf

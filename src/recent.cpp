@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "recent.hpp"
+#include "target.hpp"
 #include <algorithm>
 #include <cstring>
 #include <iterator>
@@ -7,18 +8,16 @@
 
 namespace recent {
 namespace {
-constexpr char folder[] = "hhlaunch", variable[] = "recent";
-constexpr std::string_view signature = "HH3REC1\n";
+constexpr char folder[] = "hhlaunch";
+constexpr auto variable = target::history_variable;
+constexpr auto signature = target::history_signature;
 constexpr std::size_t max_path = 99, max_record = 512;
 
 bool valid_path(std::string_view path) {
   constexpr std::string_view root = "\\fls0\\";
   if (!path.starts_with(root) || path.size() <= root.size() + 4 || path.size() > max_path)
     return false;
-  const auto extension = path.substr(path.size() - 4);
-  if (extension[0] != '.' || (extension[1] != 'h' && extension[1] != 'H') ||
-      (extension[2] != 'h' && extension[2] != 'H') || extension[3] != '3')
-    return false;
+  if (!target::accepts_path(path)) return false;
   for (const auto c : path.substr(root.size())) {
     const auto byte = static_cast<unsigned char>(c);
     if (byte < 32 || byte == 127 || c == '\\' || c == '/') return false;

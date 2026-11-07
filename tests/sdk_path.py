@@ -11,3 +11,7 @@ def sdk_include(root):
         if (sdk / 'include/sdk/os/mcs.h').is_file():
             return sdk / 'include'
     raise SystemExit('SDK missing: run git submodule update --init --recursive')
+
+
+def target_flags():
+    return ["-DLAUNCHER_HH2=" + ("1" if os.environ.get("LAUNCHER_TARGET") == "hh2" else "0")]

@@ -2,9 +2,23 @@ MAKEFLAGS = rR
 
 
 SOURCEDIR = src
-BUILDDIR = obj-classic
-OUTDIR = dist
-DEPDIR = .deps-classic
+TARGET ?= hh3
+ifeq ($(TARGET),hh2)
+OS_VERSION = 2000
+OS_FULL = 02.01.2000.0000
+OS_GUARD = 2017.0512.1515
+DEFINES = -DLAUNCHER_HH2=1
+else ifeq ($(TARGET),hh3)
+OS_VERSION = 7002
+OS_FULL = 02.01.7002.0001
+OS_GUARD = 2023.0209.1500
+DEFINES = -DLAUNCHER_HH2=0
+else
+$(error TARGET must be hh2 or hh3)
+endif
+BUILDDIR = obj-$(TARGET)
+OUTDIR = dist/$(TARGET)
+DEPDIR = .deps-$(TARGET)
 METADIR = meta
 
 AS:=sh4a_nofpueb-elf-gcc
@@ -12,12 +26,11 @@ AS_FLAGS:=-gdwarf-5
 
 SDK_DIR?=meta/hollyhock-3/sdk
 SDK_PATH=$(if $(filter /%,$(SDK_DIR)),$(SDK_DIR),../../$(SDK_DIR))
-ADDRESSES_FILE=meta/hollyhock-3/versions/v02.01.7002.0001/addresses.json
+ADDRESSES_FILE=meta/hollyhock-3/versions/v$(OS_FULL)/addresses.json
 
 DEPFLAGS=-MT $@ -MMD -MP -MF $(DEPDIR)/$*.d
 WARNINGS=-Wall -Wextra -Wno-prio-ctor-dtor -pedantic -Werror -pedantic-errors
 INCLUDES=-I$(SDK_DIR)/include -I$(SOURCEDIR)
-DEFINES=
 FUNCTION_FLAGS=-flto=auto -ffat-lto-objects -fno-builtin -ffunction-sections -fdata-sections -gdwarf-5 -Os
 COMMON_FLAGS=$(FUNCTION_FLAGS) $(INCLUDES) $(WARNINGS) $(DEFINES)
 
@@ -37,9 +50,9 @@ STRIP:=sh4a_nofpueb-elf-strip
 
 PYTHON?=python3
 
-VERSIONS := 7002
-OVERRIDES := $(OUTDIR)/addresses.2023.0209.1500.override
-$(OVERRIDES): $(BUILDDIR)/addresses.7002.prep
+VERSIONS := $(OS_VERSION)
+OVERRIDES := $(OUTDIR)/addresses.$(OS_GUARD).override
+$(OVERRIDES): $(BUILDDIR)/addresses.$(OS_VERSION).prep
 
 APP_ELFS := $(VERSIONS:%=$(OUTDIR)/run.%.elf)
 APP_BINS := $(APP_ELFS:.elf=.bin)
@@ -48,16 +61,21 @@ APP_HH3S := $(APP_ELFS:.elf=.adjusted.hh3)
 AS_SOURCES:=$(shell find $(SOURCEDIR) -name '*.S' -not -name '*.template.*')
 CC_SOURCES:=$(shell find $(SOURCEDIR) -name '*.c' -not -name '*.template.*')
 CXX_SOURCES:=$(shell find $(SOURCEDIR) -name '*.cpp' -not -name '*.template.*')
-OBJECTS := $(addprefix $(BUILDDIR)/,$(AS_SOURCES:.S=.o)) \
-	$(addprefix $(BUILDDIR)/,$(CC_SOURCES:.c=.o)) \
-	$(addprefix $(BUILDDIR)/,$(CXX_SOURCES:.cpp=.o))
+ifeq ($(TARGET),hh2)
+CXX_SOURCES:=$(filter-out $(SOURCEDIR)/loaders/elf/%,$(CXX_SOURCES))
+else
+CXX_SOURCES:=$(filter-out $(SOURCEDIR)/loaders/hh2/%,$(CXX_SOURCES))
+endif
+OBJECTS := $(addprefix $(BUILDDIR)/,$(sort $(AS_SOURCES:.S=.o))) \
+	$(addprefix $(BUILDDIR)/,$(sort $(CC_SOURCES:.c=.o))) \
+	$(addprefix $(BUILDDIR)/,$(sort $(CXX_SOURCES:.cpp=.o)))
 
 NOLTOOBJS := $(foreach obj, $(OBJECTS), $(if $(findstring /nolto/, $(obj)), $(obj)))
 
 DEPFILES := $(OBJECTS:$(BUILDDIR)/%.o=$(DEPDIR)/%.d)
 
 bin: $(APP_BINS) Makefile
-hh3: $(APP_HH3S) Makefile
+adjusted: $(if $(filter hh3,$(TARGET)),$(APP_HH3S)) Makefile
 elf: $(APP_ELFS) Makefile
 
 overrides: $(OVERRIDES) Makefile
@@ -74,24 +92,24 @@ $(SDK_DIR)/libsdk.a:
 	$(MAKE) sdk
 
 launcher: sdk
-	$(MAKE) bin elf hh3 overrides
+	$(MAKE) bin elf adjusted overrides
 
 smoke: sdk
-	$(MAKE) -C smoke/hh3 SDK_DIR="$(SDK_PATH)" APP_NAME=launcher-test
+	$(MAKE) -C smoke/$(TARGET) SDK_DIR="$(SDK_PATH)" APP_NAME=launcher-test
 
 test:
-	$(PYTHON) tools/run_tests.py host
+	$(PYTHON) tools/run_tests.py host --variant $(TARGET) --outdir "$(OUTDIR)"
 
-target-test: launcher
-	$(PYTHON) tools/run_tests.py target --outdir "$(OUTDIR)"
+target-test: launcher smoke
+	$(PYTHON) tools/run_tests.py target --variant $(TARGET) --outdir "$(OUTDIR)"
 
 package: launcher smoke
-	$(PYTHON) tools/package.py --outdir "$(OUTDIR)"
+	$(PYTHON) tools/package.py --variant $(TARGET) --outdir "$(OUTDIR)"
 
 clean:
 	rm -rf $(BUILDDIR) $(DEPDIR)
 	rm -f $(APP_BINS) $(APP_ELFS) $(APP_ELFS:%=%.map) $(APP_HH3S) $(OVERRIDES)
-	$(MAKE) -C smoke/hh3 SDK_DIR="$(SDK_PATH)" APP_NAME=launcher-test clean
+	$(MAKE) -C smoke/$(TARGET) SDK_DIR="$(SDK_PATH)" APP_NAME=launcher-test clean
 
 
 %.bin: %.elf
@@ -132,7 +150,7 @@ $(BUILDDIR)/%.o: %.cpp
 	@mkdir -p $(dir $(DEPDIR)/$<)
 	$(CXX) -c $< -o $@ $(CXX_FLAGS) $(DEPFLAGS)
 
-$(BUILDDIR)/addresses.7002.prep: $(ADDRESSES_FILE) convert_json.py
+$(BUILDDIR)/addresses.$(OS_VERSION).prep: $(ADDRESSES_FILE) convert_json.py
 	@mkdir -p $(dir $@)
 	$(PYTHON) convert_json.py $< $@
 
@@ -145,6 +163,11 @@ compile_commands.json: clean
 	#sed -i 's/-m4a-nofpu//' compile_commands.json.tmp
 	mv compile_commands.json.tmp compile_commands.json
 
-.PHONY: bin elf hh3 overrides all sdk launcher smoke test target-test package clean compile_commands.json
+.PHONY: bin elf adjusted overrides all sdk launcher smoke test target-test package clean compile_commands.json
 
 -include $(DEPFILES)
+
+hh2 hh3:
+	$(MAKE) TARGET=$@ all
+
+.PHONY: hh2 hh3

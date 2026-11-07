@@ -1,3 +1,4 @@
+#include "variant_fixture.hpp"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "classic/ui.hpp"
 #include <algorithm>
@@ -16,7 +17,7 @@ static std::vector<AppInfo> sample(int count) {
   std::vector<AppInfo> apps;
   for (int i = 0; i < count; ++i)
     apps.push_back({i == 0 ? "Tetris" : "Application " + std::to_string(i + 1),
-                    i == 0 ? "\\fls0\\tetris.hh3" : "\\fls0\\app.hh3", "1.0.0", "De_Coder",
+                    i == 0 ? "\\fls0\\tetris" APP_EXT "" : "\\fls0\\app" APP_EXT "", "1.0.0", "De_Coder",
                     "A simple implementation of the game Tetris."});
   return apps;
 }

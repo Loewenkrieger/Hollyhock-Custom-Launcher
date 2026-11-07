@@ -1,17 +1,28 @@
-# Hollyhock 3 Custom Launcher 0.5
+# Hollyhock Custom Launcher 0.6
 
-Für den Casio ClassPad II mit bereits installiertem Hollyhock 3 auf **OS 02.01.7002.0001**. Der Launcher startet **HH3-Apps (`.hh3`)**.
+Für den Casio ClassPad II mit bereits installiertem Hollyhock. Wähle die Ausgabe,
+die zu deiner vorhandenen Installation passt:
+
+| Paket | Vorhandenes System | Unterstützte Apps |
+| --- | --- | --- |
+| HH3 | OS 02.01.7002.0001 mit HH3 | `.hh3` |
+| HH2 | OS 02.01.2000.0000 mit HH2 | `.hhk`, kompatible `.bin` |
 
 ## Installation
 
 1. Die bisherige `run.bin` auf dem PC sichern.
-2. Die neue `run.bin` ins Hauptverzeichnis des Taschenrechner-Laufwerks kopieren und dort ersetzen. Sie liegt im Installationspaket ganz oben oder einzeln bei den [Releases](https://github.com/Loewenkrieger/Hollyhock-3-Custom-Launcher/releases).
-3. Deine `.hh3`-Apps ebenfalls direkt ins Hauptverzeichnis kopieren. Zum Ausprobieren liegt im Installationspaket `smoke/launcher-test.hh3` bei.
-4. Das Laufwerk sicher auswerfen, USB trennen und den Launcher über das System-Menü öffnen.
+2. Das passende [Releasepaket](https://github.com/Loewenkrieger/Hollyhock-3-Custom-Launcher/releases/tag/v0.6.0) entpacken.
+3. Die darin ganz oben liegende `run.bin` ins Hauptverzeichnis des Taschenrechner-Laufwerks kopieren und ersetzen.
+4. Apps ebenfalls ins Hauptverzeichnis kopieren, das Laufwerk sicher auswerfen und USB trennen.
+5. Den Launcher über das System-Menü wie bisher öffnen.
 
-**Es wird nur `run.bin` ausgetauscht. Ein Firmwareupdate ist nicht nötig.**
+Die einzeln angebotenen Dateien `run-hh2-os2000.bin` und `run-hh3-os7002.bin`
+vor dem Kopieren in `run.bin` umbenennen. Es wird nur der Launcher ausgetauscht.
 
-In der Fußzeile steht **0.5**. Zuerst den Launcher mit Close, X oder Clear schließen und erneut öffnen. Danach die Test-App **Launcher test: HH3** starten; sie wartet auf eine Taste und kehrt zurück.
+Die Fußzeile zeigt **HH2 | 0.6** oder **HH3 | 0.6**. Zum ersten Prüfen mit Close
+schließen und erneut öffnen; dann die passende beiliegende Test-App starten:
+`smoke/launcher-test.hh3` für HH3 oder `smoke/launcher-test.hhk`/`launcher-test.bin`
+für HH2. Die Test-App wartet auf eine Taste und kehrt zurück.
 
 ## Bedienung
 
@@ -29,26 +40,52 @@ In der Fußzeile steht **0.5**. Zuerst den Launcher mit Close, X oder Clear schl
 | Pfeil links / rechts bei geöffnetem Dropdown | Eine Seite zurück / weiter |
 | Clear oder Backspace | Dropdown schließen; sonst Launcher schließen |
 
-Apps werden direkt im Hauptverzeichnis (`\fls0\`) gesucht, nicht in Unterordnern. Die Eingaben innerhalb einer gestarteten App verarbeitet die App selbst.
+Apps werden im Hauptverzeichnis (`\fls0\`) gesucht. Jede Ausgabe zeigt die zu
+ihr passenden Dateiformate. Die eigene `run.bin` wird nicht als HH2-App angeboten.
+Innerhalb gestarteter Apps verarbeitet die App selbst alle Eingaben.
 
-Beim normalen Beenden kehrt der Launcher zur vorherigen Casio-Ansicht zurück, normalerweise zum System-Menü. Erkennt er einen anderen Systemaufrufer, verwendet er den Casio-Abschlussdialog. Fehler werden weiterhin angezeigt.
+HH3 kehrt unter dem geprüften OS-7002-Aufrufer direkt zur vorherigen Casio-Ansicht
+zurück. HH2 verwendet den ursprünglichen Casio-Abschlussdialog; diesen nach dem
+Beenden bestätigen.
 
 ## Zuletzt gestartet
 
-Die fünf zuletzt gestarteten Apps stehen mit einem **\*** oben im Dropdown. Die übrigen Apps folgen in der gewohnten Reihenfolge, ohne doppelte Einträge. Die letzte App ist beim Öffnen direkt ausgewählt; **EXE** startet sie erneut.
+Die fünf zuletzt gestarteten Apps stehen mit einem **\*** oben. Die übrigen
+folgen ohne doppelte Einträge in ihrer gewohnten Reihenfolge. Die letzte App ist
+beim Öffnen ausgewählt; **EXE** startet sie erneut.
 
-Der Verlauf wird im MCS gespeichert und erst aktualisiert, wenn eine App erfolgreich geladen wurde. Das Öffnen, Scrollen und Schließen des Launchers schreibt nichts. Entfernte oder umbenannte Apps werden übersprungen. Ist der Verlauf nicht verfügbar, bleibt die normale App-Auswahl nutzbar.
+Der Verlauf wird im MCS erst nach erfolgreichem Laden aktualisiert. Öffnen,
+Scrollen und Schließen schreibt nichts. Entfernte oder umbenannte Apps werden
+übersprungen. Bei Speicherfehlern bleibt die normale Auswahl nutzbar.
+HH2 und HH3 speichern getrennt; bestehende HH3-Einträge bleiben erhalten.
 
 ![Dropdown mit zuletzt gestarteten Apps](preview/classic-recent.png)
 
+## HH2-Kompatibilität
+
+HHK-Dateien werden nativ mit ihren OS-2000-Adressen geladen. Es findet keine
+Übersetzung alter Apps auf OS 7002 statt. BINs müssen dem HH2-Ladeformat und den
+zulässigen App-Speicherbereichen entsprechen. Bei ungültigen Dateien erscheint
+eine Fehlermeldung. Weitere Details: [Build und Tests](BUILD.md).
+
 ## Teststand und Zurückwechseln
 
-Die automatisierten Prüfungen decken Oberfläche, Eingaben, App-Suche, Metadaten, Verlauf, App-Start und den Rückgabeweg ab. **Ein abschließender Test am echten ClassPad steht noch aus**, einschließlich dauerhafter Verlaufsspeicherung und tatsächlicher Ladezeiten. Details stehen im Prüfbericht `TEST-REPORT.txt`.
+Automatisiert geprüft werden beide Oberflächen, Eingaben, Suche, Verlauf,
+Startablauf und die jeweiligen Lader. Die HH2-Prüfungen testen auch fehlerhafte
+Dateien und die tatsächlichen Kopier-/Nullzugriffe auf simulierten App-RAM.
+Die SH-Builds und Testprogramme werden zusätzlich geprüft.
 
-Zum Zurückwechseln die zuvor gesicherte `run.bin` zurückkopieren.
+Ein abschließender Test auf echter HH2- und HH3-Hardware ist für diese Ausgabe
+noch offen, einschließlich dauerhafter MCS-Speicherung und realer Ladezeiten.
+Die tatsächlichen Testausgaben liegen im Paket unter `tests-host.json` und
+`tests-target.json`. Zum Zurückwechseln die gesicherte `run.bin` zurückkopieren.
 
 ## Paketinhalt
 
-Das Installationspaket enthält `run.bin`, eine HH3-Test-App, diese Anleitung, Prüfbericht, Build-Angaben, SHA256-Prüfsummen, Vorschauen und die Debug-ELF-Datei. Der vollständige Quellcode liegt unter `source/`, die Build-Anleitung unter `source/docs/BUILD.md`.
+`run.bin`, passende Test-App(s), Anleitung, Prüfbericht, Build-Angaben,
+SHA256-Prüfsummen, Vorschauen und Debug-ELF. Der vollständige Quellcode mit SDK
+liegt unter `source/`, die Build-Anleitung unter `source/docs/BUILD.md`.
 
-Code unter GPL-3.0; Schriftlizenz unter `source/src/classic/FONT-LICENSE.txt`. Grundlagen: ClasspadDev/yal und ClasspadDev/hollyhock-3.
+Upstream-Lizenz unter `source/meta/hollyhock-3/LICENSE`, Schriftlizenz unter
+`source/src/classic/FONT-LICENSE.txt`. Grundlagen: ClasspadDev/yal,
+ClasspadDev/hollyhock-3 und SnailMath/hollyhock-2.

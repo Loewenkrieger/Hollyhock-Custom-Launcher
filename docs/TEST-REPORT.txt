@@ -1,66 +1,55 @@
-Hollyhock 3 Custom Launcher 0.5 - test report
-Validation date: 2026-10-29
+Hollyhock Custom Launcher 0.6 - validation report
+Validation date: 2026-11-07
 
-Scope
------
-HH3 launcher for installed Hollyhock 3 on OS 02.01.7002.0001.
-Fresh big-endian SuperH build with the pinned GCC 15.2.0 toolchain.
-Hardware testing: NOT performed. Calculator startup timings and persistent
-MCS behavior still require verification on a real ClassPad.
+Targets
+-------
+HH2: installed Hollyhock 2 on OS 02.01.2000.0000, HHK and compatible native BIN.
+HH3: installed Hollyhock 3 on OS 02.01.7002.0001, HH3 ELF.
+Both use the pinned SDK and GCC 15.2.0 SH toolchain; separate object/output dirs.
 
-Automated checks: 78 passed
---------------------------
-21 UI controller/renderer checks, including touch capture, dragging,
-   key repeat, scrolling, 25000 mixed events and framebuffer bounds.
- 7 real GUI adapter checks, including a 1000-app menu, lazy detail queries,
-   cached revisits and EXE launch of the preselected recent entry.
- 4 discovery checks: HH3-only filtering, sorting, hidden files/directories,
-   unsupported-only files and complete enumeration of 1000 apps.
-17 real ELF metadata checks: buffered reads, cached getters, multiple
-   segments, missing metadata, unterminated note values and repeat-safe
-   rejection of truncated headers, overflowed sizes and invalid segments.
-14 MCS history checks: round-trip storage, five-entry MRU, duplicates,
-   missing apps, filename case, invalid paths, unavailable storage,
-   write errors, maximum path lengths and 10000 malformed records.
- 5 launch integration checks using the real main() and history code:
-   restore history before selection, no write when closing, no write after
-   failed loading, write before execution, non-fatal MCS write failure,
-   display restoration and explicit errors after failed app execution.
- 6 exit-result factory checks, including every mismatching caller byte,
-   unexpected OS result constants, repeated completion and error dialogs.
- 2 narrow target SH consumer checks against the freshly linked ELF and
-   run.bin: the actual object/callback reaches the normal OS continuation;
-   the null-result regression faults at the expected object dereference.
- 2 target MCS ABI checks: SH compiler output returns 0x05000000 after a
-   synthetic byte write to the SDK enum, and 0x05 for the byte declaration.
+Host checks
+-----------
+Both variants run the real UI controller/renderer, actual GUI adapter, discovery,
+MCS history, launch orchestration and OS-return tests. Sanitizers remain enabled.
+Fixtures cover 1000 apps, mixed touch/key events, 25000 UI transitions, five-entry
+history, malformed MCS records, write-free browsing/closing and non-fatal errors.
+HH3 metadata tests retain buffered reading and cached getters.
+Variant history uses distinct variables/signatures while preserving HH3 records.
 
-Host probes use AddressSanitizer and UndefinedBehaviorSanitizer, except
-for the exit-result probe, whose fixed ROM address overlaps ASan shadow
-memory and therefore uses UBSan. LeakSanitizer is disabled. OS entrypoints,
-file enumeration, MCS and app execution are mocked where applicable.
-The target instruction consumer does not emulate the complete calculator.
+HH2 checks
+----------
+Native big-endian SuperH ELF section validation, including symbol-stripped files,
+metadata, entry point, PROGBITS/BSS, RAM boundaries and overlaps.
+Native BIN default/header addresses, optional metadata and invalid destinations.
+Malformed headers, overflowed offsets, wrong CPUs/endian, and 200 structural
+mutations are checked. Actual loader copy/BSS operations use mapped app RAM.
+Invalid files leave that RAM untouched; unloaded apps cannot execute.
+The fixed-address loader probe uses UBSan because ASan shadow overlaps the mapped
+address. Pure parser checks use ASan plus UBSan.
 
-Measured file operations
-------------------------
-Same native-endian ELF32 fixture, four standard app metadata notes.
-Baseline source: 11ebaaab52b13bf3566850580777756574d27ed6.
-Before: fopen 1, fread 14, fseek 11.
-After:  fopen 1, fread  3, fseek  4.
-Warm metadata getters perform zero additional file operations in both.
-All 1000 app names remain available; the new GUI initially requests only
-one app's three detail fields and caches subsequent selections.
-These are host operation counts, not calculator wall-clock measurements.
-See PERFORMANCE.md for the measurement method.
+Target checks
+-------------
+Actual SH ELF architecture, entry, image bounds, OS guard and required SDK
+symbols are checked for both variants. MCS enum/byte representation is verified
+from target compiler output. Real HH2 test HHK/BIN load addresses and allocated
+section bytes are cross-checked.
+HH3 additionally runs the narrow instruction consumer against the compiled
+return object/callback and the null-return regression.
+HH2 retains the upstream native OS completion-dialog return path.
 
-Build and distribution checks
------------------------------
-The pinned SDK submodule, launcher and HH3 smoke app compile successfully.
-ELF32, big-endian, EM_SH, entry 0x8cfd0000.
-App-code segment loading, cache maintenance and OS return behavior remain.
-The linked image stays below the reserved app RAM boundary at 0x8cff0000.
-The existing closed/open/empty renderer previews are pixel-identical;
-the additional recent-app preview shows the recent-entry list styling.
-ZIP CRC, embedded source snapshot, local Markdown links, metadata hashes
-and inner/outer SHA256 manifests are checked before publication.
-Release packages include tests-host.json and tests-target.json with the
-actual outputs for their source inputs and target binary.
+Packaging
+---------
+Packages require passing host/target reports for the same variant and input
+hash, and the target report must match the run.bin hash. ZIP CRC, source
+inventory, both OS address files, SDK/license inclusion and inner/outer SHA256
+lists are checked. Release jobs wait for both variants.
+
+Evidence and limits
+-------------------
+Actual per-build commands and outputs: tests-host.json and tests-target.json.
+Dynamic hashes, compiler and source revision: BUILD.json.
+SDK/OS calls are mocked in host tests. No physical calculator execution, firmware
+patching or full OS emulation was performed. Persistent MCS storage, OS dialog
+behavior and real startup/load timings still require hardware validation.
+Earlier HH3 metadata operation counts remain documented in PERFORMANCE.md;
+they are not calculator timing measurements and do not describe the HH2 format.

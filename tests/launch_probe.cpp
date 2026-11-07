@@ -2,6 +2,7 @@
 // Run the real main() and history implementation. UI, discovery and app
 // execution are replaced; no calculator memory or SH instructions are used.
 #include "gui.hpp"
+#include "variant_fixture.hpp"
 #include <sdk/os/mcs.h>
 #include <sdk/os/gui.h>
 #include <cassert>
@@ -16,7 +17,7 @@ bool loaded = false;
 int executions = 0, saves = 0, unloads = 0, backups = 0, restores = 0, errors = 0;
 std::size_t visible_recents = 0;
 std::string record, shown_path;
-struct FakeApp final : FileBasedExecutable<".hh3"> {
+struct FakeApp final : FileBasedExecutable<"" APP_EXT ""> {
   using FileBasedExecutable::FileBasedExecutable;
   void load() override {
     if (fail_load) throw std::runtime_error("load failed");
@@ -46,12 +47,16 @@ void *message(int, const char *, const char *, const char *, int, bool) {
 void reset() {
   close_menu = fail_load = fail_execute = fail_write = loaded = false;
   executions = saves = unloads = backups = restores = errors = 0;
-  record = "HH3REC1\n\\fls0\\b.hh3\n"; record.push_back('\0');
+  record = "" HISTORY "\\fls0\\b" APP_EXT "\n"; record.push_back('\0');
   shown_path.clear(); visible_recents = 0;
 }
 }
 extern "C" {
+#if LAUNCHER_HH2
+extern const std::uint8_t addresses[] = "2017.0512.1515";
+#else
 extern const std::uint8_t addresses[] = "2023.0209.1500";
+#endif
 extern const std::size_t addresses_size = sizeof(addresses);
 bool relink_sdk(const std::uint8_t *, std::size_t) { assert(false); return false; }
 bool ___relink(const std::uint8_t *, std::size_t) { assert(false); return false; }
@@ -67,8 +72,8 @@ void *(*GUI_DisplayMessageBox_Internal)(int, const char *, const char *, const c
 }
 std::forward_list<std::unique_ptr<Executable>> discover_apps() {
   std::forward_list<std::unique_ptr<Executable>> list;
-  list.emplace_front(std::make_unique<FakeApp>("\\fls0\\b.hh3"));
-  list.emplace_front(std::make_unique<FakeApp>("\\fls0\\a.hh3")); return list;
+  list.emplace_front(std::make_unique<FakeApp>("\\fls0\\b" APP_EXT ""));
+  list.emplace_front(std::make_unique<FakeApp>("\\fls0\\a" APP_EXT "")); return list;
 }
 std::unique_ptr<Executable> do_gui(std::forward_list<std::unique_ptr<Executable>> &list,
                                   std::size_t recent_count) {
@@ -79,7 +84,7 @@ std::unique_ptr<Executable> do_gui(std::forward_list<std::unique_ptr<Executable>
 int main() {
   reset(); close_menu = true;
   assert(launcher_main() == 0 && saves == 0 && executions == 0 && !loaded);
-  assert(visible_recents == 1 && shown_path == "\\fls0\\b.hh3");
+  assert(visible_recents == 1 && shown_path == "\\fls0\\b" APP_EXT "");
   std::cout << "PASS main: history is restored before selection; closing writes nothing\n";
   reset();
   assert(launcher_main() == 0 && saves == 1 && executions == 1 && unloads == 1 && errors == 0);
