@@ -21,7 +21,6 @@ Die fünf zuletzt gestarteten Apps stehen mit einem **\*** oben; die letzte App 
 
 ![Vorschau der Oberfläche](docs/preview/classic-closed.png)
 
-Die neue HH2-Ausgabe ist automatisiert geprüft; ihr Test am echten ClassPad steht noch aus.
 
 [Anleitung](docs/README_DE.md) · [Build und Tests](docs/BUILD.md) · [Prüfbericht](docs/TEST-REPORT.txt)
 
