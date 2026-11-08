@@ -21,7 +21,25 @@ address = json.loads((root / ('meta/hollyhock-3/versions/v' + full + '/addresses
 assert address['safeGuard'].encode() == guard
 required = {'LCD_GetSize','LCD_GetVRAMAddress','LCD_Refresh','GetInput','MCS_GetVariable','MCS_SetVariable','MCS_CreateFolder','GUI_DisplayMessageBox_Internal'}
 assert required <= {entry['FunctionName'] for entry in address['addresses']}
-print('PASS target SH ELF, entry point, RAM boundary and OS-specific SDK address table')
+prep = (root / ('obj-' + args.variant) / ('addresses.' + version + '.prep')).read_bytes()
+assert prep in binary and b'HHK_SYMBOL_TABLE=' in binary and b'HHK_SYMBOL_TABLE_LEN=' in binary
+cursor = prep.index(0)+1
+mapping = {}
+while cursor < len(prep):
+    end = prep.index(0,cursor)
+    name = prep[cursor:end].decode()
+    cursor = end+1
+    mapping[name] = int.from_bytes(prep[cursor:cursor+4],'big')
+    cursor += 4
+assert cursor == len(prep)
+for symbol in required:
+    expected = next(int(item['startAddress'],16) for item in address['addresses'] if item['FunctionName'] == symbol)
+    assert mapping[symbol] == expected
+print('PASS target SH ELF, RAM boundary and embedded OS symbol table for HH3 app handoff')
+shared_app = (root/'smoke/hh3/launcher-test.hh3').read_bytes()
+assert shared_app[:6] == b'\x7fELF\x01\x02'
+assert b'Launcher test: HH3' in shared_app
+print('PASS native HH3 SDK test app is included for the selected launcher')
 if args.variant == 'hh2':
     hhk = (root / 'smoke/hh2/launcher-test.hhk').read_bytes()
     raw = (root / 'smoke/hh2/launcher-test.bin').read_bytes()

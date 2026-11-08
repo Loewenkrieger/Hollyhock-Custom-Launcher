@@ -19,6 +19,7 @@ public:
   std::unique_ptr<char[]> getVersion() override;
 
 private:
+  bool loaded = false;
   std::unique_ptr<Elf32_Ehdr> ehdr = nullptr;
   std::unique_ptr<Elf32_Phdr[]> phdrs = nullptr;
   // Note views borrow these stable segment allocations; no name/description

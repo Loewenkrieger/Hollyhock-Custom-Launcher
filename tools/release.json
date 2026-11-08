@@ -1,7 +1,7 @@
 {
   "name": "Hollyhock Custom Launcher",
-  "version": "0.6",
-  "tag": "v0.6.0",
+  "version": "0.6.1",
+  "tag": "v0.6.1",
   "upstream": {
     "yal_commit": "a7bc33dc1c4c0779fd400eb1394145dd705076b5",
     "hhk3_sdk_commit": "1e483e395391d50d9bd2d21cee4beecc7589fb1c"
@@ -22,6 +22,7 @@
       "os_guard": "2017.0512.1515",
       "formats": [
         "HHK ELF (.hhk)",
+        "HH3 ELF (.hh3)",
         "native BIN (.bin)"
       ],
       "history_variable": "recent2",

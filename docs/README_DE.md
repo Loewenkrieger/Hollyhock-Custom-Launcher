@@ -1,4 +1,4 @@
-# Hollyhock Custom Launcher 0.6
+# Hollyhock Custom Launcher 0.6.1
 
 Für den Casio ClassPad II mit bereits installiertem Hollyhock. Wähle die Ausgabe,
 die zu deiner vorhandenen Installation passt:
@@ -6,12 +6,12 @@ die zu deiner vorhandenen Installation passt:
 | Paket | Vorhandenes System | Unterstützte Apps |
 | --- | --- | --- |
 | HH3 | OS 02.01.7002.0001 mit HH3 | `.hh3` |
-| HH2 | OS 02.01.2000.0000 mit HH2 | `.hhk`, kompatible `.bin` |
+| HH2 | OS 02.01.2000.0000 mit HH2 | `.hhk`, `.hh3`, kompatible `.bin` |
 
 ## Installation
 
 1. Die bisherige `run.bin` auf dem PC sichern.
-2. Das passende [Releasepaket](https://github.com/Loewenkrieger/Hollyhock-3-Custom-Launcher/releases/tag/v0.6.0) entpacken.
+2. Das passende [Releasepaket](https://github.com/Loewenkrieger/Hollyhock-Custom-Launcher/releases/tag/v0.6.1) entpacken.
 3. Die darin ganz oben liegende `run.bin` ins Hauptverzeichnis des Taschenrechner-Laufwerks kopieren und ersetzen.
 4. Apps ebenfalls ins Hauptverzeichnis kopieren, das Laufwerk sicher auswerfen und USB trennen.
 5. Den Launcher über das System-Menü wie bisher öffnen.
@@ -19,10 +19,11 @@ die zu deiner vorhandenen Installation passt:
 Die einzeln angebotenen Dateien `run-hh2-os2000.bin` und `run-hh3-os7002.bin`
 vor dem Kopieren in `run.bin` umbenennen. Es wird nur der Launcher ausgetauscht.
 
-Die Fußzeile zeigt **HH2 | 0.6** oder **HH3 | 0.6**. Zum ersten Prüfen mit Close
+Die Fußzeile zeigt **HH2 | 0.6.1** oder **HH3 | 0.6.1**. Zum ersten Prüfen mit Close
 schließen und erneut öffnen; dann die passende beiliegende Test-App starten:
 `smoke/launcher-test.hh3` für HH3 oder `smoke/launcher-test.hhk`/`launcher-test.bin`
-für HH2. Die Test-App wartet auf eine Taste und kehrt zurück.
+für HH2. Die HH2-Ausgabe enthält zusätzlich dieselbe `.hh3`-Test-App.
+Die Test-App wartet auf eine Taste und kehrt zurück.
 
 ## Bedienung
 
@@ -40,8 +41,8 @@ für HH2. Die Test-App wartet auf eine Taste und kehrt zurück.
 | Pfeil links / rechts bei geöffnetem Dropdown | Eine Seite zurück / weiter |
 | Clear oder Backspace | Dropdown schließen; sonst Launcher schließen |
 
-Apps werden im Hauptverzeichnis (`\fls0\`) gesucht. Jede Ausgabe zeigt die zu
-ihr passenden Dateiformate. Die eigene `run.bin` wird nicht als HH2-App angeboten.
+Apps werden im Hauptverzeichnis (`\fls0\`) gesucht. HH2 zeigt `.hhk`, `.hh3` und `.bin`; HH3 zeigt `.hh3`.
+Die Schreibweise der Endung spielt keine Rolle. Die eigene `run.bin` wird nicht als HH2-App angeboten.
 Innerhalb gestarteter Apps verarbeitet die App selbst alle Eingaben.
 
 HH3 kehrt unter dem geprüften OS-7002-Aufrufer direkt zur vorherigen Casio-Ansicht
@@ -64,7 +65,9 @@ HH2 und HH3 speichern getrennt; bestehende HH3-Einträge bleiben erhalten.
 ## HH2-Kompatibilität
 
 HHK-Dateien werden nativ mit ihren OS-2000-Adressen geladen. Es findet keine
-Übersetzung alter Apps auf OS 7002 statt. BINs müssen dem HH2-Ladeformat und den
+Übersetzung alter Apps auf OS 7002 statt. HH3-Dateien verwenden den ELF-Lader
+mit der OS-2000-Symboltabelle. Apps, die zwingend ein neueres OS benötigen,
+werden durch das Dateiformat allein nicht kompatibel. BINs müssen dem HH2-Ladeformat und den
 zulässigen App-Speicherbereichen entsprechen. Bei ungültigen Dateien erscheint
 eine Fehlermeldung. Weitere Details: [Build und Tests](BUILD.md).
 

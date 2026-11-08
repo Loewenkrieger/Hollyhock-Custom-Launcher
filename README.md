@@ -1,11 +1,13 @@
 # Hollyhock Custom Launcher
 
-Ein klassischer Launcher für den Casio ClassPad II – mit App-Auswahl, Programminfos, Touch- und Tastenbedienung. **Version 0.6** gibt es für HH2 und HH3.
+Ein klassischer Launcher für den Casio ClassPad II – mit App-Auswahl, Programminfos, Touch- und Tastenbedienung. **Version 0.6.1** gibt es für HH2 und HH3.
 
 | Deine Installation | Apps | Download |
 | --- | --- | --- |
-| **HH3 · OS 02.01.7002.0001** | `.hh3` | [HH3-Paket](https://github.com/Loewenkrieger/Hollyhock-3-Custom-Launcher/releases/download/v0.6.0/hhk3-launcher-0.6-os7002.zip) |
-| **HH2 · OS 02.01.2000.0000** | `.hhk`, kompatible `.bin` | [HH2-Paket](https://github.com/Loewenkrieger/Hollyhock-3-Custom-Launcher/releases/download/v0.6.0/hhk2-launcher-0.6-os2000.zip) |
+| **HH3 · OS 02.01.7002.0001** | `.hh3` | [HH3-Paket](https://github.com/Loewenkrieger/Hollyhock-Custom-Launcher/releases/download/v0.6.1/hhk3-launcher-0.6.1-os7002.zip) |
+| **HH2 · OS 02.01.2000.0000** | `.hhk`, `.hh3`, kompatible `.bin` | [HH2-Paket](https://github.com/Loewenkrieger/Hollyhock-Custom-Launcher/releases/download/v0.6.1/hhk2-launcher-0.6.1-os2000.zip) |
+
+Die HH2-Ausgabe erkennt alle drei Endungen unabhängig von der Schreibweise. HH3-Apps müssen zur vorhandenen OS-Version passen.
 
 ## Installation
 

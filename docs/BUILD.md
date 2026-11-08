@@ -11,8 +11,8 @@ Die Makefile liest die passende `addresses.json` direkt daraus.
 ## Quellen und Voraussetzungen
 
 ```sh
-git clone --recurse-submodules https://github.com/Loewenkrieger/Hollyhock-3-Custom-Launcher.git
-cd Hollyhock-3-Custom-Launcher
+git clone --recurse-submodules https://github.com/Loewenkrieger/Hollyhock-Custom-Launcher.git
+cd Hollyhock-Custom-Launcher
 ```
 
 Bei einem bestehenden Checkout: `git submodule update --init`. Im vollständigen
@@ -44,7 +44,8 @@ make TARGET=hh2 package
 ```
 
 Ergebnisse: `dist/hh2/run.2000.bin`, Debug-ELF und
-`smoke/hh2/launcher-test.hhk` sowie `launcher-test.bin`.
+`smoke/hh2/launcher-test.hhk` sowie `launcher-test.bin`. Zusätzlich wird die native HH3-Test-App für den
+HH2-Build mitgebaut und dem Paket beigelegt.
 `make hh2` und `make hh3` sind Kurzformen für Build und Test-App der jeweiligen
 Variante. Ohne Angabe bleibt HH3 voreingestellt. Build- und Abhängigkeitsordner sind
 getrennt; die gemeinsame SDK-Bibliothek wird automatisch gebaut.
@@ -102,3 +103,17 @@ Nur zum Neuerzeugen der mitgelieferten Schrift wird Pillow benötigt:
 ```sh
 python3 generate_classic_font.py assets/DejaVuSans.ttf src/classic/font.hpp
 ```
+
+## Gemeinsame Suche und HH3 unter HH2
+
+Beide Builds durchsuchen das Hauptverzeichnis einmal mit `\fls0\*` und
+filtern die Endungen selbst ohne Beachtung der Groß-/Kleinschreibung. HH2
+verwendet HHK-, BIN- und HH3-Lader, HH3 weiterhin den HH3-Lader. Erfolgreich
+geöffnete Suchhandles werden auch bei Fehlern geschlossen.
+
+Der HH3-Lader prüft alle PT_LOAD-Bereiche und den SH-Eintrittspunkt vor dem
+ersten RAM-Schreibzugriff. Der eigene Launcher-Bereich bleibt ausgespart.
+Der Aufruf übergibt `argc`, den Dateipfad als `argv[0]` und `environ`; die
+Symboltabelle darin gehört zum tatsächlich gestarteten OS. Der unveränderte
+SDK-Resolver wird in Hosttests mit den jeweiligen OS-Adressen geprüft.
+HH3-Apps mit zwingenden OS-7002-Abhängigkeiten bleiben auf OS 2000 inkompatibel.

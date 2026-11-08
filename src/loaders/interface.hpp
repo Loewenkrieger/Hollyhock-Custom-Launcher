@@ -35,14 +35,6 @@ public:
   virtual ~Executable() = default;
 };
 
-template <typename T> struct discover;
-
-template <typename E>
-  requires(!std::is_base_of_v<Executable, E>) || std::is_same_v<E, Executable>
-struct discover<E> {
-  discover() = delete;
-};
-
 template <StringLiteral EXT> class FileBasedExecutable : public Executable {
 protected:
   const std::unique_ptr<const char[]> path;
@@ -61,62 +53,4 @@ public:
   std::string_view pathView() const override { return path.get(); }
 
   static constexpr auto ext = EXT;
-};
-
-template <typename T>
-  requires std::is_base_of_v<FileBasedExecutable<T::ext>, T> &&
-           (!std::is_same_v<FileBasedExecutable<T::ext>, T>)
-struct discover<T> {
-  static void run(std::forward_list<std::unique_ptr<Executable>> &list) {
-    int findHandle = 0;
-    File_FindInfo findInfo{};
-    constexpr auto prefix = "\\fls0\\";
-    constexpr auto prefix_len = std::char_traits<char>::length(prefix);
-    constexpr auto pattern = ([prefix, prefix_len] {
-      std::array<char_const16_t, prefix_len + T::ext.size + 1> arr{};
-      std::copy_n(prefix, prefix_len, arr.data());
-      arr[prefix_len] = '*';
-      std::copy_n(T::ext.value, T::ext.size - 1, arr.data() + prefix_len + 1);
-      return arr;
-    })();
-    auto filename = ([] {
-      std::array<char_const16_t, 100> arr{};
-      std::copy_n(prefix, prefix_len, arr.data());
-      return arr;
-    })();
-
-    auto ret = File_FindFirst(pattern.data(), &findHandle,
-                              filename.data() + prefix_len, &findInfo);
-
-    while (ret >= FILE_OK) {
-      do {
-        if (findInfo.type != File_FindInfo::EntryTypeFile) {
-          continue;
-        }
-        if (filename[prefix_len] == '.') {
-          continue;
-        }
-        std::unique_ptr<T> ptr;
-        try {
-          ptr = std::make_unique<T>(filename.data());
-        } catch (const std::exception &e) {
-          auto len =
-              std::char_traits<char_const16_t>::length(filename.data()) + 1;
-          auto uptr = std::make_unique<char[]>(len);
-          std::copy_n(filename.data(), len, uptr.get());
-          Debug_Printf(1, 3, false, 0, "Error processing file \"%s\"",
-                       uptr.get());
-          Debug_Printf(1, 5, false, 0, "%s", e.what());
-          Debug_Printf(3, 8, false, 0, "Press any key to continue");
-          LCD_Refresh();
-          Debug_WaitKey();
-          continue;
-        }
-        list.emplace_front(std::move(ptr));
-      } while (false);
-      ret = File_FindNext(findHandle, filename.data() + prefix_len, &findInfo);
-    }
-    File_FindClose(findHandle);
-  }
-  discover() = delete;
 };

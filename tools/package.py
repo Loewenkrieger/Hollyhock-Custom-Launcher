@@ -46,8 +46,8 @@ run_name = 'run-' + args.variant + '-os' + version + '.bin'
 metadata_name = 'BUILD-' + args.variant + '.json'
 entries = {'run.bin': run, 'BUILD.json': (json.dumps(metadata, indent=2) + '\n').encode(),
            'debug/run.' + version + '.elf': elf}
-for extension in (['hhk','bin'] if args.variant == 'hh2' else ['hh3']):
-    entries['smoke/launcher-test.' + extension] = (ROOT / ('smoke/' + args.variant + '/launcher-test.' + extension)).read_bytes()
+for extension in (['hhk','bin','hh3'] if args.variant == 'hh2' else ['hh3']):
+    entries['smoke/launcher-test.' + extension] = (ROOT / ('smoke/' + ('hh3' if extension == 'hh3' else 'hh2') + '/launcher-test.' + extension)).read_bytes()
 for name in ['README_DE.md', 'TEST-REPORT.txt', 'PERFORMANCE.md']:
     entries[name] = (ROOT / 'docs' / name).read_bytes()
 entries['README_DE.md'] = entries['README_DE.md'].replace(b'(BUILD.md)', b'(source/docs/BUILD.md)')

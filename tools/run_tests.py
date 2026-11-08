@@ -18,7 +18,9 @@ import os
 os.environ["LAUNCHER_TARGET"] = args.variant
 version = "2000" if args.variant == "hh2" else "7002"
 commands = [[sys.executable, 'tests/test_' + name + '.py'] for name in
-            ['classic', 'discovery', 'hh2' if args.variant == 'hh2' else 'loader', 'recent', 'launch', 'exit']]
+            ['classic', 'discovery', 'loader', 'recent', 'launch', 'exit']]
+if args.variant == 'hh2': commands.insert(3,[sys.executable,'tests/test_hh2.py'])
+commands.extend([[sys.executable,'tests/test_elf_load.py'],[sys.executable,'tests/test_sdk_relink.py']])
 commands[0] += ['--preview', str(args.outdir / 'preview')]
 if args.suite == 'target':
     commands = [[sys.executable, 'tests/test_mcs_abi.py'],

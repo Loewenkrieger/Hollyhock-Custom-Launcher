@@ -61,9 +61,7 @@ APP_HH3S := $(APP_ELFS:.elf=.adjusted.hh3)
 AS_SOURCES:=$(shell find $(SOURCEDIR) -name '*.S' -not -name '*.template.*')
 CC_SOURCES:=$(shell find $(SOURCEDIR) -name '*.c' -not -name '*.template.*')
 CXX_SOURCES:=$(shell find $(SOURCEDIR) -name '*.cpp' -not -name '*.template.*')
-ifeq ($(TARGET),hh2)
-CXX_SOURCES:=$(filter-out $(SOURCEDIR)/loaders/elf/%,$(CXX_SOURCES))
-else
+ifeq ($(TARGET),hh3)
 CXX_SOURCES:=$(filter-out $(SOURCEDIR)/loaders/hh2/%,$(CXX_SOURCES))
 endif
 OBJECTS := $(addprefix $(BUILDDIR)/,$(sort $(AS_SOURCES:.S=.o))) \
@@ -96,6 +94,9 @@ launcher: sdk
 
 smoke: sdk
 	$(MAKE) -C smoke/$(TARGET) SDK_DIR="$(SDK_PATH)" APP_NAME=launcher-test
+ifeq ($(TARGET),hh2)
+	$(MAKE) -C smoke/hh3 SDK_DIR="$(SDK_PATH)" APP_NAME=launcher-test
+endif
 
 test:
 	$(PYTHON) tools/run_tests.py host --variant $(TARGET) --outdir "$(OUTDIR)"

@@ -1,5 +1,12 @@
 # Änderungen
 
+## 0.6.1
+
+- HH2 listet und lädt HHK, HH3 und BIN gemeinsam, unabhängig von der Endungs-Schreibweise.
+- Eine gemeinsame Dateisuche mit verlässlichem Schließen der Suchhandles.
+- HH3-Segmentprüfung und Aufruf mit der zum OS passenden SDK-Symboltabelle.
+- Tests für gemischte Listen, alle drei Formate und den erweiterten Verlauf.
+
 ## 0.6
 
 - Getrennte HH2- und HH3-Ausgaben mit gemeinsamer Oberfläche.

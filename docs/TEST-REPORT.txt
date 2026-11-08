@@ -1,9 +1,9 @@
-Hollyhock Custom Launcher 0.6 - validation report
-Validation date: 2026-11-07
+Hollyhock Custom Launcher 0.6.1 - validation report
+Validation date: 2026-11-08
 
 Targets
 -------
-HH2: installed Hollyhock 2 on OS 02.01.2000.0000, HHK and compatible native BIN.
+HH2: installed Hollyhock 2 on OS 02.01.2000.0000, HHK, HH3 and compatible native BIN.
 HH3: installed Hollyhock 3 on OS 02.01.7002.0001, HH3 ELF.
 Both use the pinned SDK and GCC 15.2.0 SH toolchain; separate object/output dirs.
 
@@ -53,3 +53,16 @@ patching or full OS emulation was performed. Persistent MCS storage, OS dialog
 behavior and real startup/load timings still require hardware validation.
 Earlier HH3 metadata operation counts remain documented in PERFORMANCE.md;
 they are not calculator timing measurements and do not describe the HH2 format.
+
+0.6.1 format-search regression
+-----------------------------
+One full directory scan; original case-sensitive OS filenames are returned
+unmodified by the mock. Mixed HHK/HH3/BIN cases, exact loader dispatch, own
+launcher exclusion, 1000 apps, malformed names and find-handle error paths.
+HH2 history covers all three formats. Both builds run ELF metadata/load tests.
+The real ELF loader is tested against mapped RAM for segment copies, BSS,
+preflight failures and entry-call arguments/environment. A host trampoline
+checks the calling convention, not SH instruction execution. The unchanged
+SDK resolver is exercised with a mapped ROM guard and selected OS addresses;
+these host records use host pointer width. Target checks independently verify
+the actual embedded SH-width symbol table and the shared HH3 SDK test app.

@@ -102,7 +102,7 @@ int main() {
     assert(creates == 0 && writes == 0);
     pass("existing recent apps lead the list; missing apps are dropped; all other apps retain their order"); }
 
-  { reset(); payload("" HISTORY "\\fls0\\one" APP_EXT "\n\\fls0\\one" APP_EXT "\nwrong" APP_EXT "\n\\fls0\\sub\\two" APP_EXT "\n\\fls0\\old" OTHER_EXT "\n\\fls0\\two" APP_EXT "\n");
+  { reset(); payload("" HISTORY "\\fls0\\one" APP_EXT "\n\\fls0\\one" APP_EXT "\nwrong" APP_EXT "\n\\fls0\\sub\\two" APP_EXT "\n\\fls0\\old.txt\n\\fls0\\two" APP_EXT "\n");
     auto history = recent::load(); assert(history.size == 2 && history.paths[1] == "\\fls0\\two" APP_EXT "");
     pass("invalid paths and duplicate stored entries are skipped"); }
 
@@ -177,10 +177,19 @@ int main() {
     const auto before = writes;
     recent::remember("\\fls0\\RUN.BIN", history);
     recent::remember("\\fls0\\run-hh3-os7002.bin", history);
-    recent::remember("\\fls0\\other.hh3", history);
+
     assert(writes == before);
   }
-  pass("HH2 BIN history is retained while launchers and HH3 paths are excluded");
+  pass("HH2 BIN history is retained while launcher paths are excluded");
+  reset();
+  { recent::History history;
+    for (const auto *path : {"\\fls0\\one.HHK","\\fls0\\two.Hh3","\\fls0\\three.BIN"})
+      recent::remember(path,history);
+    const auto restored = recent::load();
+    assert(restored.size == 3 && restored.paths[0] == "\\fls0\\three.BIN" &&
+           restored.paths[1] == "\\fls0\\two.Hh3" && restored.paths[2] == "\\fls0\\one.HHK");
+  }
+  pass("HH2 history preserves all three formats and their original case");
 #endif
   std::cout << passed << '/' << passed << " history checks passed\n";
 }
