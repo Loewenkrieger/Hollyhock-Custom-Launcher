@@ -1,5 +1,5 @@
 Hollyhock Custom Launcher 0.6.1 - validation report
-Validation date: 2026-11-08
+Validation date: 2026-11-09
 
 Targets
 -------
@@ -15,6 +15,16 @@ Fixtures cover 1000 apps, mixed touch/key events, 25000 UI transitions, five-ent
 history, malformed MCS records, write-free browsing/closing and non-fatal errors.
 HH3 metadata tests retain buffered reading and cached getters.
 Variant history uses distinct variables/signatures while preserving HH3 records.
+
+ClassPad design update
+---------------------
+Both variants use the same ClassPad-style frame, cyan press/selection feedback,
+wider Run/Close buttons and separated app details. Closed, open, recent, empty
+and pressed states are rendered from the real controller/renderer as previews.
+Each variant passes 23 UI checks and 7 SDK-adapter checks, including redraws when
+a row press turns into a drag or is cancelled horizontally. Startup still reads
+details for only the selected app; revisiting an app reuses the cached details.
+Idle events do not redraw. Description text is rendered without a combined copy.
 
 HH2 checks
 ----------

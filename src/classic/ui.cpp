@@ -120,16 +120,16 @@ bool State::touch_down(int x, int y) {
 bool State::touch_move(int x, int y) {
   if (pressed == Target::None || x < 0 || x >= 320 || y < 0 || y >= 528) return false;
   if (open && pressed == Target::Row && (dragging || std::abs(y - down_y) >= 12)) {
+    const bool started = !dragging;
     dragging = true;
     const auto old = first;
     first = std::clamp(start_first + (down_y - y) / Layout::row_height,
                        0, std::max(0, static_cast<int>(count) - visible_rows()));
-    return old != first;
+    return old != first || started;
   }
   if (!press_rect.contains(x, y, 8) && !cancelled) {
     cancelled = true;
-    const bool changed = pressed != Target::Row;
-    return changed;
+    return true;
   }
   return false;
 }
@@ -158,8 +158,17 @@ bool State::touch_up() {
 }
 
 namespace {
-constexpr std::uint16_t white = 0xffff, black = 0x0000, body = 0xf7be,
-                        edge = 0x7bef, shadow = 0xbdf7, title = 0x6b4d, blue = 0x0010;
+constexpr std::uint16_t rgb(unsigned r, unsigned g, unsigned b) {
+  return static_cast<std::uint16_t>(((r >> 3) << 11) | ((g >> 2) << 5) | (b >> 3));
+}
+// ClassPad dialog colours, with CP-Canvas as the visual reference.
+constexpr std::uint16_t white = 0xffff, black = 0x0000,
+    ink = rgb(49, 48, 49), muted = rgb(90, 89, 90),
+    body = rgb(247, 243, 247), edge = rgb(181, 178, 181),
+    outline = rgb(115, 113, 115), shadow = rgb(206, 203, 206),
+    title_top = rgb(82, 81, 82), title_bottom = rgb(107, 105, 107),
+    cyan = rgb(90, 219, 255), selection = rgb(181, 239, 255),
+    cyan_edge = rgb(90, 150, 173);
 class Painter {
 public:
   Canvas c;
@@ -172,13 +181,29 @@ public:
     fill({r.x, r.y, r.w, 1}, colour); fill({r.x, r.y + r.h - 1, r.w, 1}, colour);
     fill({r.x, r.y, 1, r.h}, colour); fill({r.x + r.w - 1, r.y, 1, r.h}, colour);
   }
-  void bevel(Rect r, bool down) {
-    fill(r, body); border(r, edge);
-    const auto light = down ? shadow : white, dark = down ? white : shadow;
-    fill({r.x + 1, r.y + 1, r.w - 2, 2}, light);
-    fill({r.x + 1, r.y + 1, 2, r.h - 2}, light);
-    fill({r.x + 2, r.y + r.h - 3, r.w - 3, 2}, dark);
-    fill({r.x + r.w - 3, r.y + 2, 2, r.h - 3}, dark);
+  void gradient(Rect r, std::uint16_t top, std::uint16_t bottom) {
+    const int steps = std::max(1, r.h - 1);
+    for (int y = 0; y < r.h; ++y) {
+      const int red = (top >> 11) + ((int(bottom >> 11) - (top >> 11)) * y) / steps;
+      const int green = ((top >> 5) & 63) + ((int((bottom >> 5) & 63) - ((top >> 5) & 63)) * y) / steps;
+      const int blue = (top & 31) + ((int(bottom & 31) - (top & 31)) * y) / steps;
+      fill({r.x, r.y + y, r.w, 1}, static_cast<std::uint16_t>((red << 11) | (green << 5) | blue));
+    }
+  }
+  void button(Rect r, bool down) {
+    fill(r, down ? cyan : white);
+    border(r, edge);
+    border({r.x + 1, r.y + 1, r.w - 2, r.h - 2}, outline);
+    border({r.x + 2, r.y + 2, r.w - 4, r.h - 4}, down ? cyan_edge : shadow);
+    gradient({r.x + 3, r.y + 3, r.w - 6, 6}, down ? selection : white, down ? cyan : body);
+    fill({r.x + 3, r.y + r.h - 4, r.w - 6, 1}, down ? cyan_edge : shadow);
+  }
+  void cross(Rect r, std::uint16_t colour) {
+    const int x = r.x + (r.w - 7) / 2, y = r.y + (r.h - 7) / 2;
+    for (int i = 0; i < 7; ++i) {
+      fill({x + i, y + i, 1, 1}, colour);
+      fill({x + 6 - i, y + i, 1, 1}, colour);
+    }
   }
   void dotted(Rect r) {
     for (int x = r.x; x < r.x + r.w; x += 2) { fill({x, r.y, 1, 1}, black); fill({x, r.y + r.h - 1, 1, 1}, black); }
@@ -210,8 +235,8 @@ public:
       for (int xx = 0; xx < font::width; ++xx)
         if ((font::bits[n][yy] & (0x8000u >> xx)) && clip.contains(x + xx, y + yy)) fill({x + xx, y + yy, 1, 1}, colour);
   }
-  void text(Rect box, std::string_view s, std::uint16_t colour = black, bool wrap = false) {
-    int x = box.x, y = box.y;
+  int text(Rect box, std::string_view s, std::uint16_t colour = ink, bool wrap = false) {
+    int x = box.x, y = box.y, bottom = box.y;
     for (std::size_t i = 0; i < s.size() && y + font::height <= box.y + box.h;) {
       const auto cp = next(s, i);
       if (cp == '\r') continue;
@@ -231,9 +256,11 @@ public:
         if (y + font::height > box.y + box.h) break;
       }
       glyph(x, y, cp, colour, box); x += adv;
+      bottom = y + font::line;
     }
+    return bottom;
   }
-  void centred(Rect r, std::string_view label, std::uint16_t colour = black) {
+  void centred(Rect r, std::string_view label, std::uint16_t colour = ink) {
     const int w = measure(label);
     text({r.x + (r.w - w) / 2, r.y + (r.h - font::height) / 2, w, font::height}, label, colour);
   }
@@ -248,72 +275,86 @@ public:
 
 void render(Canvas canvas, const State &s, const std::vector<AppInfo> &apps) {
   Painter p{canvas};
-  p.fill({0, 0, canvas.width, canvas.height}, white);
-  p.bevel({2, 1, 317, 501}, false);
-  p.fill({6, 5, 309, 27}, title);
-  p.border({5, 4, 311, 29}, black);
-  p.text({15, 9, 270, 20}, "Hollyhock Launcher", white);
-  p.bevel(Layout::title_close, s.visually_pressed(Target::TitleClose));
-  p.centred(Layout::title_close, "x");
+  p.fill({0, 0, canvas.width, canvas.height}, body);
+  p.fill({2, 1, 317, 501}, white);
+  p.border({2, 1, 317, 501}, outline);
+  p.border({3, 2, 315, 499}, edge);
+  p.border({4, 3, 313, 497}, body);
+  p.gradient({6, 5, 309, 27}, title_top, title_bottom);
+  p.border({5, 4, 311, 29}, ink);
+  p.fill({6, 5, 309, 1}, edge);
+  p.text({15, 8, 270, 20}, "Hollyhock Launcher", white);
+  p.button(Layout::title_close, s.visually_pressed(Target::TitleClose));
+  p.cross(Layout::title_close, ink);
   p.fill({7, 34, 307, 462}, white);
+  p.fill({7, 34, 307, 93}, body);
+  p.fill({7, 126, 307, 1}, shadow);
 
-  p.bevel(Layout::selector, true);
-  p.fill({18, 47, 261, 22}, white);
-  p.bevel({280, 45, 24, 26}, s.open);
-  p.arrow(287, 55, false, edge);
+  const bool selecting = s.open || s.visually_pressed(Target::Selector);
+  p.fill(Layout::selector, white);
+  p.border(Layout::selector, outline);
+  p.border({16, 45, 288, 26}, edge);
+  if (selecting) p.fill({17, 46, 263, 24}, selection);
+  p.button({280, 45, 24, 26}, selecting);
+  p.arrow(287, 55, false, ink);
   const bool has_app = s.selected >= 0 && static_cast<std::size_t>(s.selected) < apps.size();
-  p.text({26, 49, 248, 20}, has_app ? apps[s.selected].name : "No apps found");
+  p.text({24, 48, 250, 20}, has_app ? apps[s.selected].name : "No apps found", has_app ? ink : muted);
 
-  p.bevel(Layout::run, s.visually_pressed(Target::Run));
-  p.centred(Layout::run, "Run", has_app ? black : edge);
-  p.bevel(Layout::close, s.visually_pressed(Target::Close));
+  p.button(Layout::run, s.visually_pressed(Target::Run));
+  p.centred(Layout::run, "Run", has_app ? ink : edge);
+  p.button(Layout::close, s.visually_pressed(Target::Close));
   p.centred(Layout::close, "Close");
   const auto fr = s.focus == Target::Run ? Layout::run : s.focus == Target::Close ? Layout::close : Layout::selector;
   if (!s.open) p.dotted({fr.x + 4, fr.y + 4, fr.w - (s.focus == Target::Selector ? 33 : 8), fr.h - 8});
 
+  p.text({15, 135, 100, 20}, "App details", muted);
+  p.fill({112, 145, 193, 1}, shadow);
   if (has_app) {
     const auto &a = apps[s.selected];
-    std::string info = a.name;
-    if (!a.version.empty() || !a.author.empty()) {
-      info += "\n(";
-      if (!a.version.empty()) info += "version " + a.version;
-      if (!a.author.empty()) info += (a.version.empty() ? "by " : " by ") + a.author;
-      info += ")";
+    int y = p.text({15, 159, 290, 40}, a.name, ink, true) + 6;
+    if (!a.version.empty()) y = p.text({15, y, 290, 40}, "Version " + a.version, muted, true);
+    if (!a.author.empty()) y = p.text({15, y, 290, 40}, "By " + a.author, muted, true);
+    // Keep the full filename visible before the description. Draw each field
+    // directly, without copying the potentially large description on redraw.
+    y = p.text({15, y + 8, 290, 120}, a.path, muted, true) + 12;
+    if (!a.description.empty()) {
+      p.fill({15, y, 290, 1}, shadow);
+      p.text({15, y + 12, 290, 487 - y - 12}, a.description, ink, true);
     }
-    info += "\n(from " + a.path + ")";
-    if (!a.description.empty()) info += "\n\n" + a.description;
-    p.text({15, 127, 288, 360}, info, black, true);
   } else {
-    p.text({15, 127, 288, 360}, target::empty_message, black, true);
+    p.text({15, 159, 290, 328}, target::empty_message, ink, true);
   }
-  p.fill({0, 503, 320, 2}, shadow);
-  p.text({8, 508, 120, 20}, target::name);
-  p.text({205, 508, 108, 20}, target::footer);
+  p.fill({0, 503, 320, 1}, edge);
+  p.fill({0, 504, 320, 1}, white);
+  p.text({8, 507, 185, 20}, std::to_string(s.count) + (s.count == 1 ? " app" : " apps"), muted);
+  p.text({205, 507, 108, 20}, target::footer, muted);
 
   if (!s.open) return;
   const auto box = s.popup();
   p.fill({box.x + 3, box.y + 3, box.w, box.h}, shadow);
-  p.fill(box, white); p.border(box, edge);
+  p.fill(box, white); p.border(box, outline);
   for (int row = s.first; row < s.first + s.visible_rows() && static_cast<std::size_t>(row) < apps.size(); ++row) {
     const auto r = s.row_rect(row);
-    const bool active = row == s.selected || (s.pressed == Target::Row && row == s.pressed_row);
-    if (active) p.fill(r, blue);
+    const bool pressed = s.visually_pressed(Target::Row) && row == s.pressed_row;
+    const bool active = row == s.selected;
+    if (active || pressed) p.fill(r, pressed ? cyan : selection);
+    if (active) p.fill({r.x, r.y, 3, r.h}, cyan_edge);
     if (row > 0 && !apps[row].recent && apps[row - 1].recent)
       p.fill({r.x + 2, r.y, r.w - 4, 1}, edge);
     const int inset = apps[row].recent ? 22 : 8;
-    if (apps[row].recent) p.text({r.x + 6, r.y + 4, 12, 20}, "*", active ? white : black);
-    p.text({r.x + inset, r.y + 4, r.w - inset - 5, 20}, apps[row].name, active ? white : black);
+    if (apps[row].recent) p.text({r.x + 6, r.y + 4, 12, 20}, "*", cyan_edge);
+    p.text({r.x + inset, r.y + 4, r.w - inset - 5, 20}, apps[row].name);
   }
   if (s.count > static_cast<std::size_t>(s.visible_rows())) {
     p.fill({282, box.y + 1, 22, box.h - 2}, body);
-    p.bevel({282, box.y + 1, 22, 27}, false);
-    p.arrow(287, box.y + 11, true, edge);
-    p.bevel({282, box.y + box.h - 28, 22, 27}, false);
-    p.arrow(287, box.y + box.h - 18, false, edge);
+    p.button({282, box.y + 1, 22, 27}, s.visually_pressed(Target::ScrollUp));
+    p.arrow(287, box.y + 11, true, ink);
+    p.button({282, box.y + box.h - 28, 22, 27}, s.visually_pressed(Target::ScrollDown));
+    p.arrow(287, box.y + box.h - 18, false, ink);
     const int track = box.h - 58;
     const int thumb = std::max(12, track * s.visible_rows() / static_cast<int>(s.count));
     const int thumb_y = box.y + 29 + (track - thumb) * s.first / (static_cast<int>(s.count) - s.visible_rows());
-    p.bevel({284, thumb_y, 18, thumb}, false);
+    p.button({284, thumb_y, 18, thumb}, false);
   }
 }
 } // namespace classic

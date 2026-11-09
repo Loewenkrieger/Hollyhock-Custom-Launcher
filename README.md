@@ -1,6 +1,6 @@
 # Hollyhock Custom Launcher
 
-Ein klassischer Launcher für den Casio ClassPad II – mit App-Auswahl, Programminfos, Touch- und Tastenbedienung. **Version 0.6.1** gibt es für HH2 und HH3.
+Ein Launcher im ClassPad-Stil – mit App-Auswahl, Programminfos, Touch- und Tastenbedienung. **Version 0.6.1** gibt es für HH2 und HH3.
 
 | Deine Installation | Apps | Download |
 | --- | --- | --- |
@@ -27,3 +27,4 @@ Die fünf zuletzt gestarteten Apps stehen mit einem **\*** oben; die letzte App 
 [Anleitung](docs/README_DE.md) · [Build und Tests](docs/BUILD.md) · [Prüfbericht](docs/TEST-REPORT.txt)
 
 Basierend auf [YAL](https://github.com/ClasspadDev/yal), dem [Hollyhock-SDK](https://github.com/ClasspadDev/hollyhock-3) und den Dateiformaten von [Hollyhock 2](https://github.com/SnailMath/hollyhock-2).
+Die Gestaltung orientiert sich an [CP-Canvas](https://github.com/TheRainbowPhoenix/CP-Canvas).

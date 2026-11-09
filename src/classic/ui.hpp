@@ -21,11 +21,11 @@ enum class Key { Up, Down, Left, Right, Enter, Escape };
 enum class Action { None, Run, Close };
 enum class Target { None, Selector, Run, Close, TitleClose, Row, ScrollUp, ScrollDown };
 
-// Coordinates follow the original HHK2 launcher on the 320 x 528 LCD.
+// Shared touch targets for the 320 x 528 ClassPad LCD.
 struct Layout {
   static constexpr Rect selector{15, 44, 290, 28};
-  static constexpr Rect run{15, 80, 100, 36};
-  static constexpr Rect close{207, 80, 98, 36};
+  static constexpr Rect run{15, 80, 140, 36};
+  static constexpr Rect close{165, 80, 140, 36};
   static constexpr Rect title_close{293, 8, 20, 21};
   static constexpr int popup_y = 73, row_height = 28, max_rows = 10;
 };

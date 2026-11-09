@@ -50,6 +50,8 @@ int main(int argc, char **argv) {
   { State s(1); tap(s, 50, 55); s.key(Key::Escape); assert(!s.open && s.action == Action::None); s.key(Key::Escape, true); assert(s.action == Action::None); s.key(Key::Escape); assert(s.action == Action::Close); pass("Clear closes dropdown first and then launcher"); }
   { State s(1); tap(s, 300, 18); assert(s.action == Action::Close); pass("title X closes launcher"); }
   { State s(50); tap(s, 50, 55); s.touch_down(50, 150); s.touch_move(50, 60); s.touch_up(); assert(s.first == 3 && s.open && s.selected == 0); pass("dropdown drag scrolls without selecting an app"); }
+  { State s(50); tap(s, 50, 55); s.touch_down(50, 150); assert(s.visually_pressed(Target::Row)); assert(s.touch_move(50, 137)); assert(s.first == 0 && !s.visually_pressed(Target::Row)); s.touch_up(); assert(s.open && s.selected == 0); pass("starting a drag clears row feedback before the first scroll step"); }
+  { State s(5); tap(s, 50, 55); s.touch_down(50, 150); assert(s.touch_move(310, 150)); assert(!s.visually_pressed(Target::Row)); s.touch_up(); assert(s.open && s.selected == 0); pass("leaving a row horizontally redraws its cancelled press"); }
   { State s(50); tap(s, 50, 55); s.key(Key::Right); assert(s.selected == 10 && s.first == 1); for (int i = 0; i < 10; ++i) s.key(Key::Right); assert(s.selected == 49 && s.first == 40); pass("keyboard paging reaches final apps"); }
   { State s(50); tap(s, 50, 55); auto r = s.popup(); tap(s, 290, r.y + r.h - 10); assert(s.first == 1 && s.open); tap(s, 290, r.y + 10); assert(s.first == 0 && s.open); pass("scroll arrows advance one row"); }
   { State s(3); for (int i = 0; i < 1000; ++i) { tap(s, 50, 55); s.touch_down(50, 90); s.touch_up(); assert(!s.open); } assert(s.action == Action::None); pass("1000 queued tap pairs preserve all transitions"); }
@@ -62,6 +64,7 @@ int main(int argc, char **argv) {
     tap(normal, 50, 55); ppm(directory + "/classic-open.ppm", normal, apps);
     for (int i = 0; i < 3; ++i) apps[i].recent = true;
     ppm(directory + "/classic-recent.ppm", normal, apps);
+    State pressed(apps.size()); pressed.touch_down(50, 95); ppm(directory + "/classic-pressed.ppm", pressed, apps);
     State empty(0); ppm(directory + "/classic-empty.ppm", empty, {});
   }
   std::cout << passed << "/" << passed << " checks passed\n";
