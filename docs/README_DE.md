@@ -1,4 +1,4 @@
-# Hollyhock Custom Launcher 0.6.1
+# Hollyhock Custom Launcher 0.6.2
 
 Für den Casio ClassPad II mit bereits installiertem Hollyhock. Wähle die Ausgabe,
 die zu deiner vorhandenen Installation passt:
@@ -11,7 +11,7 @@ die zu deiner vorhandenen Installation passt:
 ## Installation
 
 1. Die bisherige `run.bin` auf dem PC sichern.
-2. Das passende [Releasepaket](https://github.com/Loewenkrieger/Hollyhock-Custom-Launcher/releases/tag/v0.6.1) entpacken.
+2. Das passende [Releasepaket](https://github.com/Loewenkrieger/Hollyhock-Custom-Launcher/releases/tag/v0.6.2) entpacken.
 3. Die darin ganz oben liegende `run.bin` ins Hauptverzeichnis des Taschenrechner-Laufwerks kopieren und ersetzen.
 4. Apps ebenfalls ins Hauptverzeichnis kopieren, das Laufwerk sicher auswerfen und USB trennen.
 5. Den Launcher über das System-Menü wie bisher öffnen.
@@ -19,7 +19,7 @@ die zu deiner vorhandenen Installation passt:
 Die einzeln angebotenen Dateien `run-hh2-os2000.bin` und `run-hh3-os7002.bin`
 vor dem Kopieren in `run.bin` umbenennen. Es wird nur der Launcher ausgetauscht.
 
-Die Fußzeile zeigt **HH2 | 0.6.1** oder **HH3 | 0.6.1**. Zum ersten Prüfen mit Close
+Die Fußzeile zeigt **HH2 | 0.6.2** oder **HH3 | 0.6.2**. Zum ersten Prüfen mit Close
 schließen und erneut öffnen; dann die passende beiliegende Test-App starten:
 `smoke/launcher-test.hh3` für HH3 oder `smoke/launcher-test.hhk`/`launcher-test.bin`
 für HH2. Die HH2-Ausgabe enthält zusätzlich dieselbe `.hh3`-Test-App.

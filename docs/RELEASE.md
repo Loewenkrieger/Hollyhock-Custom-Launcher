@@ -1,23 +1,23 @@
-Hollyhock Custom Launcher 0.6.1 – getrennte Ausgaben für HH2 und HH3.
+Hollyhock Custom Launcher 0.6.2 – ClassPad-Design für HH2 und HH3.
+
+Neu in dieser Ausgabe:
+- Dunkle Titelleiste, silbergraue Rahmen und cyanblaue Druck- und Auswahlzustände, angelehnt an [CP-Canvas](https://github.com/TheRainbowPhoenix/CP-Canvas).
+- Breitere Run-/Close-Buttons, übersichtliche App-Details und App-Anzahl in der Fußzeile.
+- Saubere Druckrückmeldung beim Scrollen; Beschreibungstexte ohne zusätzliche Gesamtkopie beim Zeichnen.
 
 | Download | Vorhandene Installation | Apps |
 | --- | --- | --- |
-| hhk2-launcher-0.6.1-os2000.zip | HH2 auf OS 02.01.2000.0000 | .hhk, .hh3 und kompatible .bin |
-| hhk3-launcher-0.6.1-os7002.zip | HH3 auf OS 02.01.7002.0001 | .hh3 |
+| hhk2-launcher-0.6.2-os2000.zip | HH2 auf OS 02.01.2000.0000 | .hhk, .hh3 und kompatible .bin |
+| hhk3-launcher-0.6.2-os7002.zip | HH3 auf OS 02.01.7002.0001 | .hh3 |
 
 Beide Pakete enthalten eine fertig benannte `run.bin`, Testprogramme, Anleitung,
-Prüfsummen, tatsächliche Testberichte und den vollständigen Quellcode mit SDK.
-Einzelne `run-hh2-os2000.bin`/`run-hh3-os7002.bin` vor dem Kopieren in
-`run.bin` umbenennen.
+Prüfsummen, Testberichte und den vollständigen Quellcode mit SDK.
+Einzelne `run-hh2-os2000.bin`/`run-hh3-os7002.bin` vor dem Kopieren in `run.bin`
+umbenennen. Die bisherige `run.bin` vorher sichern.
 
-Gemeinsame Oberfläche, Touch-/Tastenbedienung und fünf zuletzt gestartete Apps.
-HH2 und HH3 führen getrennte Verläufe. HH2 nutzt native OS-2000-Lader und den
-ursprünglichen Casio-Abschlussdialog; HH3 behält den OS-7002-Rückgabeadapter.
+Touch-/Tastenbedienung, App-Formate und die fünf zuletzt gestarteten Apps bleiben
+erhalten. HH2 und HH3 speichern getrennte Verläufe. HH3-Apps müssen zur
+vorhandenen OS-Version passen.
 
 Beide Varianten sind automatisiert geprüft. Der abschließende Test dieser
 Ausgabe an echten HH2-/HH3-Geräten steht noch aus.
-
-Korrektur: Die HH2-Ausgabe erkennt HHK, HH3 und BIN gemeinsam, auch bei
-groß- oder gemischtgeschriebenen Endungen. Ein gemeinsamer Verzeichnisdurchlauf
-ersetzt die getrennten OS-Wildcard-Suchen. HH3-Apps erhalten die OS-2000-
-Symboltabelle; ihre eigenen OS-/Hardwareanforderungen gelten weiterhin.

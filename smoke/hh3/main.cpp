@@ -4,7 +4,7 @@
 APP_NAME("Launcher test: HH3")
 APP_DESCRIPTION("Native HH3 SDK app. Displays a message and returns after a key press.")
 APP_AUTHOR("Hollyhock Custom Launcher")
-APP_VERSION("0.6.1")
+APP_VERSION("0.6.2")
 int main() {
   LCD_ClearScreen();
   Debug_Printf(2, 3, false, 0, "HH3 .hh3 started");

@@ -1,5 +1,13 @@
 # Änderungen
 
+## 0.6.2
+
+- ClassPad-Design nach CP-Canvas als Vorlage, gemeinsam für HH2 und HH3.
+- Dunkle Titelleiste, silbergraue Rahmen und cyanblaue Druck- und Auswahlzustände.
+- Breitere Run-/Close-Buttons, gegliederte App-Details und App-Anzahl in der Fußzeile.
+- Druckrückmeldung wird beim Scrollen und Verlassen eines Listeneintrags zurückgesetzt.
+- Beschreibungstexte werden beim Zeichnen ohne zusätzliche Gesamtkopie verwendet.
+
 ## 0.6.1
 
 - HH2 listet und lädt HHK, HH3 und BIN gemeinsam, unabhängig von der Endungs-Schreibweise.

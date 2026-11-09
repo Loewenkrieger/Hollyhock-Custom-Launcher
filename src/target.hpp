@@ -12,7 +12,7 @@ inline constexpr std::string_view history_signature = hh2 ? "HH2REC1\n" : "HH3RE
 inline constexpr const char *empty_message = hh2
     ? "No apps were found on your calculator.\n\nCopy .hhk, .hh3 or compatible .bin files to the root directory of the calculator's flash."
     : "No apps were found on your calculator.\n\nCopy .hh3 files to the root directory of the calculator's flash.";
-inline constexpr const char *footer = hh2 ? "HH2  |  0.6.1" : "HH3  |  0.6.1";
+inline constexpr const char *footer = hh2 ? "HH2  |  0.6.2" : "HH3  |  0.6.2";
 constexpr char lower(char c) { return c >= 'A' && c <= 'Z' ? c + ('a' - 'A') : c; }
 constexpr bool equals(std::string_view a, std::string_view b) {
   if (a.size() != b.size()) return false;
