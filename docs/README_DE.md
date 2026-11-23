@@ -1,94 +1,53 @@
-# Hollyhock Custom Launcher 0.6.2
+# Hollyhock Custom Launcher 0.7.0-beta.1
 
-Für den Casio ClassPad II mit bereits installiertem Hollyhock. Wähle die Ausgabe,
-die zu deiner vorhandenen Installation passt:
+Lokale Beta mit Compact-Oberfläche: Schwarz-Weiß, runde Knöpfe und grauer Listenrahmen. Beim Öffnen erscheint Recent mit höchstens fünf zuletzt gestarteten Apps. Rechts liegt All apps mit der vollständigen Liste.
 
-| Paket | Vorhandenes System | Unterstützte Apps |
+| Ausgabe | Vorhandenes System | Apps |
 | --- | --- | --- |
-| HH3 | OS 02.01.7002.0001 mit HH3 | `.hh3` |
 | HH2 | OS 02.01.2000.0000 mit HH2 | `.hhk`, `.hh3`, kompatible `.bin` |
+| HH3 | OS 02.01.7002.0001 mit HH3 | `.hh3` |
+
+HH3-Apps müssen zur vorhandenen OS-Version passen. Die Schreibweise der Dateiendung spielt keine Rolle. Es wird nur der Launcher ausgetauscht.
 
 ## Installation
 
 1. Die bisherige `run.bin` auf dem PC sichern.
-2. Das passende [Releasepaket](https://github.com/Loewenkrieger/Hollyhock-Custom-Launcher/releases/tag/v0.6.2) entpacken.
+2. Das passende lokale Paket entpacken: `hhk2-launcher-0.7.0-beta.1-os2000.zip` oder `hhk3-launcher-0.7.0-beta.1-os7002.zip`.
 3. Die darin ganz oben liegende `run.bin` ins Hauptverzeichnis des Taschenrechner-Laufwerks kopieren und ersetzen.
-4. Apps ebenfalls ins Hauptverzeichnis kopieren, das Laufwerk sicher auswerfen und USB trennen.
-5. Den Launcher über das System-Menü wie bisher öffnen.
+4. Apps ebenfalls ins Hauptverzeichnis kopieren. Sicher auswerfen und USB trennen.
+5. Den Launcher wie bisher öffnen. Die Fußzeile zeigt HH2 oder HH3 und `0.7.0-beta.1`.
 
-Die einzeln angebotenen Dateien `run-hh2-os2000.bin` und `run-hh3-os7002.bin`
-vor dem Kopieren in `run.bin` umbenennen. Es wird nur der Launcher ausgetauscht.
-
-Die Fußzeile zeigt **HH2 | 0.6.2** oder **HH3 | 0.6.2**. Zum ersten Prüfen mit Close
-schließen und erneut öffnen; dann die passende beiliegende Test-App starten:
-`smoke/launcher-test.hh3` für HH3 oder `smoke/launcher-test.hhk`/`launcher-test.bin`
-für HH2. Die HH2-Ausgabe enthält zusätzlich dieselbe `.hh3`-Test-App.
-Die Test-App wartet auf eine Taste und kehrt zurück.
+Einzelne `run-hh2-os2000.bin`/`run-hh3-os7002.bin` vor dem Kopieren in `run.bin` umbenennen.
 
 ## Bedienung
 
 | Eingabe | Funktion |
 | --- | --- |
-| Programmauswahl antippen | Dropdown öffnen oder schließen |
-| Eintrag antippen | App auswählen |
-| Im Dropdown ziehen oder Pfeile antippen | Liste scrollen |
-| Run | Ausgewählte App starten |
-| Close oder X | Launcher schließen |
-| Pfeil hoch / runter | Vorherige / nächste App wählen |
-| EXE bei geschlossenem Dropdown | App starten; bei Fokus auf Close schließen |
-| EXE bei geöffnetem Dropdown | Auswahl bestätigen |
-| Pfeil links / rechts bei geschlossenem Dropdown | Fokus zwischen Auswahl, Run und Close wechseln |
-| Pfeil links / rechts bei geöffnetem Dropdown | Eine Seite zurück / weiter |
-| Clear oder Backspace | Dropdown schließen; sonst Launcher schließen |
+| Recent / All apps antippen | Seite wechseln |
+| Pfeil links / rechts | Recent / All apps öffnen |
+| Zeile antippen oder Pfeil hoch / runter | App auswählen |
+| Liste ziehen | Scrollen, ohne eine App zu starten |
+| Schmalen Scrollbalken ziehen | Schnell zu entfernten Einträgen springen |
+| Run app / EXE | Ausgewählte App starten |
+| Info (0) / Taste 0 | App-Details öffnen |
+| In Details ziehen oder Pfeile hoch / runter | Beschreibung scrollen |
+| Pfeile links / rechts in Details | Eine Textseite zurück / weiter |
+| Clear / Backspace / X | Details schließen; sonst Launcher beenden |
 
-Apps werden im Hauptverzeichnis (`\fls0\`) gesucht. HH2 zeigt `.hhk`, `.hh3` und `.bin`; HH3 zeigt `.hh3`.
-Die Schreibweise der Endung spielt keine Rolle. Die eigene `run.bin` wird nicht als HH2-App angeboten.
-Innerhalb gestarteter Apps verarbeitet die App selbst alle Eingaben.
+Auswahl und Scrollposition bleiben beim Wechsel zwischen Recent und All apps erhalten, solange der Launcher geöffnet ist. Ein Antippen wählt nur aus; gestartet wird mit Run app oder EXE. In gestarteten Apps verarbeitet die App selbst alle Eingaben.
 
-HH3 kehrt unter dem geprüften OS-7002-Aufrufer direkt zur vorherigen Casio-Ansicht
-zurück. HH2 verwendet den ursprünglichen Casio-Abschlussdialog; diesen nach dem
-Beenden bestätigen.
+Ohne Verlauf ist Recent zunächst leer. Über All apps lässt sich die erste App starten. Der Verlauf wird erst nach erfolgreichem Laden aktualisiert, bleibt auf fünf Einträge begrenzt und verwendet die bisherigen getrennten HH2-/HH3-Variablen. Öffnen, Scrollen und Schließen schreiben nichts ins MCS.
 
-## Zuletzt gestartet
+## Prüfen und zurückwechseln
 
-Die fünf zuletzt gestarteten Apps stehen mit einem **\*** oben. Die übrigen
-folgen ohne doppelte Einträge in ihrer gewohnten Reihenfolge. Die letzte App ist
-beim Öffnen ausgewählt; **EXE** startet sie erneut.
+Zuerst den Launcher mit X schließen und erneut öffnen. Danach eine beiliegende Test-App verwenden: `smoke/launcher-test.hh3` für HH3 oder `smoke/launcher-test.hhk`/`launcher-test.bin` für HH2. Das HH2-Paket enthält zusätzlich die HH3-Test-App. Zum Zurückwechseln die gesicherte `run.bin` zurückkopieren.
 
-Der Verlauf wird im MCS erst nach erfolgreichem Laden aktualisiert. Öffnen,
-Scrollen und Schließen schreibt nichts. Entfernte oder umbenannte Apps werden
-übersprungen. Bei Speicherfehlern bleibt die normale Auswahl nutzbar.
-HH2 und HH3 speichern getrennt; bestehende HH3-Einträge bleiben erhalten.
+HH2 verwendet weiterhin den ursprünglichen Casio-Abschlussdialog. HH3 nutzt den vorhandenen OS-7002-Rückgabeadapter. Formate, SDK und Adresstabellen bleiben erhalten.
 
-![Dropdown mit zuletzt gestarteten Apps](preview/classic-recent.png)
-
-## HH2-Kompatibilität
-
-HHK-Dateien werden nativ mit ihren OS-2000-Adressen geladen. Es findet keine
-Übersetzung alter Apps auf OS 7002 statt. HH3-Dateien verwenden den ELF-Lader
-mit der OS-2000-Symboltabelle. Apps, die zwingend ein neueres OS benötigen,
-werden durch das Dateiformat allein nicht kompatibel. BINs müssen dem HH2-Ladeformat und den
-zulässigen App-Speicherbereichen entsprechen. Bei ungültigen Dateien erscheint
-eine Fehlermeldung. Weitere Details: [Build und Tests](BUILD.md).
-
-## Teststand und Zurückwechseln
-
-Automatisiert geprüft werden beide Oberflächen, Eingaben, Suche, Verlauf,
-Startablauf und die jeweiligen Lader. Die HH2-Prüfungen testen auch fehlerhafte
-Dateien und die tatsächlichen Kopier-/Nullzugriffe auf simulierten App-RAM.
-Die SH-Builds und Testprogramme werden zusätzlich geprüft.
-
-Ein abschließender Test auf echter HH2- und HH3-Hardware ist für diese Ausgabe
-noch offen, einschließlich dauerhafter MCS-Speicherung und realer Ladezeiten.
-Die tatsächlichen Testausgaben liegen im Paket unter `tests-host.json` und
-`tests-target.json`. Zum Zurückwechseln die gesicherte `run.bin` zurückkopieren.
+Beide Ausgaben sind automatisiert geprüft. Ein Test auf echter HH2-/HH3-Hardware steht noch aus. Die tatsächlichen Ergebnisse liegen im Paket unter `tests-host.json` und `tests-target.json`.
 
 ## Paketinhalt
 
-`run.bin`, passende Test-App(s), Anleitung, Prüfbericht, Build-Angaben,
-SHA256-Prüfsummen, Vorschauen und Debug-ELF. Der vollständige Quellcode mit SDK
-liegt unter `source/`, die Build-Anleitung unter `source/docs/BUILD.md`.
+`run.bin`, Test-Apps, Anleitung, Prüfberichte, Prüfsummen, native Vorschauen und Debug-ELF. Vollständige Quellen einschließlich SDK liegen unter `source/`; siehe [Build und Tests](BUILD.md).
 
-Upstream-Lizenz unter `source/meta/hollyhock-3/LICENSE`, Schriftlizenz unter
-`source/src/classic/FONT-LICENSE.txt`. Grundlagen: ClasspadDev/yal,
-ClasspadDev/hollyhock-3 und SnailMath/hollyhock-2.
+SDK-Lizenz: `source/meta/hollyhock-3/LICENSE`. Schriftlizenz: `source/src/classic/FONT-LICENSE.txt`.

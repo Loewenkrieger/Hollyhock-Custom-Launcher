@@ -1,5 +1,14 @@
 # Änderungen
 
+## 0.7.0-beta.1 · lokal
+
+- Compact-Design in Schwarz-Weiß mit runden Bedienelementen und grauem Listenrahmen.
+- Recent als Startseite mit höchstens fünf Apps; All apps rechts mit vollständiger Liste.
+- Getrennte Auswahl- und Scrollpositionen pro Seite, Touch-Scrollen und ziehbarer Scrollbalken.
+- Separate, scrollbare App-Details über Info oder Taste 0.
+- Native UI-Prüfungen für 10.000 Apps und 50.000 gemischte Eingabeereignisse.
+- Eigene lokale Beta-Buildordner und Pakete für HH2 und HH3.
+
 ## 0.6.2
 
 - ClassPad-Design nach CP-Canvas als Vorlage, gemeinsam für HH2 und HH3.

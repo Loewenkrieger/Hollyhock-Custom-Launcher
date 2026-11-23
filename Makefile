@@ -16,9 +16,9 @@ DEFINES = -DLAUNCHER_HH2=0
 else
 $(error TARGET must be hh2 or hh3)
 endif
-BUILDDIR = obj-$(TARGET)
-OUTDIR = dist/$(TARGET)
-DEPDIR = .deps-$(TARGET)
+BUILDDIR = obj-beta-$(TARGET)
+OUTDIR = dist/beta/$(TARGET)
+DEPDIR = .deps-beta-$(TARGET)
 METADIR = meta
 
 AS:=sh4a_nofpueb-elf-gcc

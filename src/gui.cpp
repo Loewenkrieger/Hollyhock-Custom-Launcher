@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "gui.hpp"
 #include "classic/ui.hpp"
+#include <algorithm>
 #include <optional>
 #include <sdk/os/input.h>
 #include <sdk/os/lcd.h>
@@ -18,6 +19,7 @@ std::optional<classic::Key> translate(Input_Keycode code) {
   case KEYCODE_EXE: return classic::Key::Enter;
   case KEYCODE_POWER_CLEAR:
   case KEYCODE_BACKSPACE: return classic::Key::Escape;
+  case KEYCODE_0: return classic::Key::Info;
   default: return std::nullopt;
   }
 }
@@ -29,6 +31,7 @@ do_gui(std::forward_list<std::unique_ptr<Executable>> &executables,
   std::vector<std::unique_ptr<Executable> *> entries;
   std::vector<classic::AppInfo> apps;
   const auto count = static_cast<std::size_t>(std::distance(executables.begin(), executables.end()));
+  recent_count = std::min({recent_count, count, std::size_t{5}});
   entries.reserve(count);
   apps.reserve(count);
   std::vector<bool> details_loaded(count, false);
@@ -50,7 +53,8 @@ do_gui(std::forward_list<std::unique_ptr<Executable>> &executables,
   unsigned int screen_width = 0, screen_height = 0;
   LCD_GetSize(&screen_width, &screen_height);
   const classic::Canvas screen{LCD_GetVRAMAddress(), static_cast<int>(screen_width), static_cast<int>(screen_height)};
-  classic::State state(apps.size());
+  classic::State state(apps.size(), recent_count);
+  int measured_selection = -1, measured_height = 0;
   bool dirty = true;
   while (state.action == classic::Action::None) {
     if (state.selected >= 0 && !details_loaded[state.selected]) {
@@ -64,6 +68,13 @@ do_gui(std::forward_list<std::unique_ptr<Executable>> &executables,
         app.description = error.what();
       }
       details_loaded[state.selected] = true;
+    }
+    if (state.details && state.selected >= 0) {
+      if (measured_selection != state.selected) {
+        measured_height = classic::details_height(apps[state.selected]);
+        measured_selection = state.selected;
+      }
+      state.set_detail_height(measured_height);
     }
     if (dirty) { classic::render(screen, state, apps); LCD_Refresh(); dirty = false; }
     // Service one blocking OS event queue immediately. No timer or competing

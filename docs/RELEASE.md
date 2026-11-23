@@ -1,23 +1,13 @@
-Hollyhock Custom Launcher 0.6.2 – ClassPad-Design für HH2 und HH3.
+Hollyhock Custom Launcher 0.7.0-beta.1 — local Compact beta for HH2 and HH3.
 
-Neu in dieser Ausgabe:
-- Dunkle Titelleiste, silbergraue Rahmen und cyanblaue Druck- und Auswahlzustände, angelehnt an [CP-Canvas](https://github.com/TheRainbowPhoenix/CP-Canvas).
-- Breitere Run-/Close-Buttons, übersichtliche App-Details und App-Anzahl in der Fußzeile.
-- Saubere Druckrückmeldung beim Scrollen; Beschreibungstexte ohne zusätzliche Gesamtkopie beim Zeichnen.
+- Black-and-white interface with rounded controls and a grey list frame.
+- Recent opens first and is strictly limited to five apps. All apps contains the full library.
+- Touch scrolling, draggable scrollbar and arrow navigation. Each page preserves its selection and viewport while the launcher is open.
+- App details open separately with the Info button or the 0 key; long descriptions can be scrolled.
+- Existing file formats, OS-specific loaders, history storage and return paths are preserved.
 
-| Download | Vorhandene Installation | Apps |
-| --- | --- | --- |
-| hhk2-launcher-0.6.2-os2000.zip | HH2 auf OS 02.01.2000.0000 | .hhk, .hh3 und kompatible .bin |
-| hhk3-launcher-0.6.2-os7002.zip | HH3 auf OS 02.01.7002.0001 | .hh3 |
+Packages: `hhk2-launcher-0.7.0-beta.1-os2000.zip` and `hhk3-launcher-0.7.0-beta.1-os7002.zip` under `dist/beta/release/`.
 
-Beide Pakete enthalten eine fertig benannte `run.bin`, Testprogramme, Anleitung,
-Prüfsummen, Testberichte und den vollständigen Quellcode mit SDK.
-Einzelne `run-hh2-os2000.bin`/`run-hh3-os7002.bin` vor dem Kopieren in `run.bin`
-umbenennen. Die bisherige `run.bin` vorher sichern.
+Each package includes `run.bin`, test apps, source with the pinned SDK, native previews, actual host/target reports and SHA256 checksums. Back up the calculator's current `run.bin` before replacing it.
 
-Touch-/Tastenbedienung, App-Formate und die fünf zuletzt gestarteten Apps bleiben
-erhalten. HH2 und HH3 speichern getrennte Verläufe. HH3-Apps müssen zur
-vorhandenen OS-Version passen.
-
-Beide Varianten sind automatisiert geprüft. Der abschließende Test dieser
-Ausgabe an echten HH2-/HH3-Geräten steht noch aus.
+Automated tests cover both variants. No physical calculator testing has been performed for this beta. No GitHub release is created for this local build.

@@ -1,5 +1,7 @@
 # Build und Tests
 
+Dieser lokale Zweig baut `0.7.0-beta.1` mit der Compact-Oberfläche. Es werden keine Dateien auf GitHub hochgeladen. Die Befehle unten erzeugen ausschließlich lokale Builds und Pakete.
+
 Die gemeinsame Oberfläche liegt unter `src/classic/`. App-Suche, Verlaufsformat und
 UI-Hinweise werden über `src/target.hpp` für HH2 oder HH3 ausgewählt. Die App-Lader
 liegen getrennt unter `src/loaders/hh2/` und `src/loaders/elf/`.
@@ -11,13 +13,12 @@ Die Makefile liest die passende `addresses.json` direkt daraus.
 ## Quellen und Voraussetzungen
 
 ```sh
-git clone --recurse-submodules https://github.com/Loewenkrieger/Hollyhock-Custom-Launcher.git
-cd Hollyhock-Custom-Launcher
+cd /path/to/extracted-beta-package/source
 ```
 
-Bei einem bestehenden Checkout: `git submodule update --init`. Im vollständigen
-Releasepaket sind die nötigen SDK-Quellen bereits unter `source/` enthalten.
-GitHubs automatisch erzeugte Source-Archive füllen Submodules nicht aus.
+Im lokalen Beta-Paket sind die nötigen SDK-Quellen bereits unter `source/`
+enthalten; zum Bauen ist kein Git-Checkout nötig. Im ursprünglichen lokalen
+Repository liegt die Beta auf dem Zweig `codex/design-beta`.
 
 Für Hosttests: Linux, Python 3, g++ mit C++23 und ASan/UBSan.
 Für Calculator-Builds zusätzlich `sh4a_nofpueb-elf-g++` 15.2.0 samt Werkzeugen.
@@ -32,7 +33,7 @@ make TARGET=hh3 target-test
 make TARGET=hh3 package
 ```
 
-Ergebnisse: `dist/hh3/run.7002.bin`, Debug-ELF und `smoke/hh3/launcher-test.hh3`.
+Ergebnisse: `dist/beta/hh3/run.7002.bin`, Debug-ELF und `smoke/hh3/launcher-test.hh3`.
 
 ## HH2 bauen
 
@@ -43,7 +44,7 @@ make TARGET=hh2 target-test
 make TARGET=hh2 package
 ```
 
-Ergebnisse: `dist/hh2/run.2000.bin`, Debug-ELF und
+Ergebnisse: `dist/beta/hh2/run.2000.bin`, Debug-ELF und
 `smoke/hh2/launcher-test.hhk` sowie `launcher-test.bin`. Zusätzlich wird die native HH3-Test-App für den
 HH2-Build mitgebaut und dem Paket beigelegt.
 `make hh2` und `make hh3` sind Kurzformen für Build und Test-App der jeweiligen
@@ -56,18 +57,16 @@ Das SDK separat mit `make -C meta/hollyhock-3/sdk clean` bereinigen.
 ## Prüfungen und Pakete
 
 Host- und Zielprüfungen schreiben ihre tatsächlichen Ausgaben nach
-`dist/hh2/tests-*.json` bzw. `dist/hh3/tests-*.json`.
+`dist/beta/hh2/tests-*.json` bzw. `dist/beta/hh3/tests-*.json`.
 Der Paketbau akzeptiert nur erfolgreiche Berichte für dieselbe Variante,
 dieselben Quelldateien und dasselbe Ziel-Binary.
 
-Unter `dist/release/` entstehen pro Variante ein eindeutig benanntes Binary,
+Unter `dist/beta/release/` entstehen pro Variante ein eindeutig benanntes Binary,
 Komplettpaket, `BUILD-hh2.json`/`BUILD-hh3.json` und eine eigene SHA256-Liste.
 Im Komplettpaket heißt der Launcher bereits `run.bin`; beide enthalten den
 vollständigen Quellstand einschließlich SDK und beider OS-Adressdateien.
 
-GitHub Actions prüft beide Varianten in einer Matrix. Ein Versionstag passend zu
-`tools/release.json` veröffentlicht beide Pakete gemeinsam. Nur der Release-Job
-hat Schreibrechte. Auf `main` und bei Pull Requests entstehen Build-Artefakte.
+Für diese Beta werden weder ein Remote-Zweig noch ein Versionstag gepusht. Die vorhandene GitHub-Pipeline wird hier nicht ausgelöst. `tools/release.json` kennzeichnet die Pakete als `local-beta` mit `publish: false`.
 
 ## HH2-Ladevertrag
 

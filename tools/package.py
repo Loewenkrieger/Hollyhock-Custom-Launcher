@@ -54,7 +54,8 @@ entries['README_DE.md'] = entries['README_DE.md'].replace(b'(BUILD.md)', b'(sour
 # Upstream notices are always included with the SDK sources below.
 if (ROOT / 'LICENSE').is_file():
     entries['LICENSE'] = (ROOT / 'LICENSE').read_bytes()
-for path in (ROOT / 'docs/preview').glob('*.png'):
+preview_pattern = 'beta-' + args.variant + '-*.png' if config.get('channel') == 'local-beta' else '*.png'
+for path in (ROOT / 'docs/preview').glob(preview_pattern):
     entries['preview/' + path.name] = path.read_bytes()
 for name in info['files']:
     entries['source/' + name] = (ROOT / name).read_bytes()

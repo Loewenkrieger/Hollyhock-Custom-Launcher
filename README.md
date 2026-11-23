@@ -1,29 +1,38 @@
-# Hollyhock Custom Launcher
+# Hollyhock Custom Launcher · local beta
 
-A ClassPad-style launcher for the Casio ClassPad II, with app details and touch and keypad controls. **Version 0.6.2** is available for HH2 and HH3.
+**0.7.0-beta.1** brings the Compact layout to HH2 and HH3: black and white, rounded controls and a grey frame around the app list.
 
-| Your installation | Apps | Download |
-| --- | --- | --- |
-| **HH3 · OS 02.01.7002.0001** | `.hh3` | [HH3 package](https://github.com/Loewenkrieger/Hollyhock-Custom-Launcher/releases/download/v0.6.2/hhk3-launcher-0.6.2-os7002.zip) |
-| **HH2 · OS 02.01.2000.0000** | `.hhk`, `.hh3`, compatible `.bin` | [HH2 package](https://github.com/Loewenkrieger/Hollyhock-Custom-Launcher/releases/download/v0.6.2/hhk2-launcher-0.6.2-os2000.zip) |
+The launcher opens on **Recent**, with up to five apps. **All apps** is on the right and contains your full library. Drag the list or scrollbar, or use the arrow keys. Each page remembers its selection and scroll position while the launcher is open.
 
-HH2 recognizes all three extensions regardless of case. HH3 apps must support your installed OS version.
+| Your installation | Supported apps |
+| --- | --- |
+| HH3 · OS 02.01.7002.0001 | `.hh3` |
+| HH2 · OS 02.01.2000.0000 | `.hhk`, `.hh3`, compatible `.bin` |
 
-## Install
+HH3 apps must support your installed OS. File extensions are case-insensitive.
 
-1. Download the package for your installed Hollyhock and OS version.
-2. Back up your existing `run.bin`, then replace it with the one from the package. Copy your apps to the root directory too.
+## Try it locally
+
+Build and test with the commands in [Build and tests](docs/BUILD.md). Packages are written to `dist/beta/release/`, separately from the stable builds.
+
+1. Choose the package matching your Hollyhock and OS version.
+2. Back up the calculator's existing `run.bin`, then replace it with the `run.bin` from the package. Put apps in the root directory too.
 3. Safely eject the calculator, disconnect USB and open the launcher as usual.
 
-## Use
+## Controls
 
-Choose an app from the dropdown and tap **Run**. **Close**, **X** or **Clear** closes the launcher. You can also use the arrow keys and **EXE**.
+- Tap **Recent** or **All apps**; left/right arrows switch pages.
+- Tap a row or use up/down to select an app. **Run app** or **EXE** starts it.
+- Drag the list to scroll. Drag the narrow scrollbar to reach distant entries quickly.
+- **Info (0)** or the **0** key opens app details. Drag or use arrows to read long descriptions.
+- **Clear**, **Backspace** or **X** closes details first, then the launcher.
 
-Your five most recently launched apps appear at the top with a **\***. The last app is selected automatically, and your history is saved between sessions.
+Without a history, Recent starts empty; open All apps to launch your first app. The existing HH2/HH3 history storage is preserved. Browsing and closing never write history.
 
-![Launcher preview](docs/preview/classic-closed.png)
+![Native Compact beta preview](docs/preview/beta-hh3-recent.png)
 
-[German guide](docs/README_DE.md) · [Build and tests (German)](docs/BUILD.md) · [Test report](docs/TEST-REPORT.txt)
+[German guide](docs/README_DE.md) · [Build and tests](docs/BUILD.md) · [Test report](docs/TEST-REPORT.txt)
 
-Based on [YAL](https://github.com/ClasspadDev/yal), the [Hollyhock SDK](https://github.com/ClasspadDev/hollyhock-3) and the [Hollyhock 2](https://github.com/SnailMath/hollyhock-2) file formats.
-Design inspired by [CP-Canvas](https://github.com/TheRainbowPhoenix/CP-Canvas).
+This is a local beta. Automated checks cover both builds; physical HH2/HH3 testing is still pending.
+
+Based on [YAL](https://github.com/ClasspadDev/yal), the [Hollyhock SDK](https://github.com/ClasspadDev/hollyhock-3) and the [Hollyhock 2](https://github.com/SnailMath/hollyhock-2) file formats. Earlier ClassPad styling used [CP-Canvas](https://github.com/TheRainbowPhoenix/CP-Canvas) as a reference.

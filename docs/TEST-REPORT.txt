@@ -1,5 +1,5 @@
-Hollyhock Custom Launcher 0.6.2 - validation report
-Validation date: 2026-11-09
+Hollyhock Custom Launcher 0.7.0-beta.1 - local validation report
+Validation date: 2026-11-23
 
 Targets
 -------
@@ -16,15 +16,20 @@ history, malformed MCS records, write-free browsing/closing and non-fatal errors
 HH3 metadata tests retain buffered reading and cached getters.
 Variant history uses distinct variables/signatures while preserving HH3 records.
 
-ClassPad design update
+Compact beta update
 ---------------------
-Both variants use the same ClassPad-style frame, cyan press/selection feedback,
-wider Run/Close buttons and separated app details. Closed, open, recent, empty
-and pressed states are rendered from the real controller/renderer as previews.
-Each variant passes 23 UI checks and 7 SDK-adapter checks, including redraws when
-a row press turns into a drag or is cancelled horizontally. Startup still reads
-details for only the selected app; revisiting an app reuses the cached details.
+Both variants use the same black-and-white Compact renderer, rounded controls,
+grey list frame and separate Recent/All pages. Recent is capped at five even
+when an oversized count is supplied. All retains the complete list.
+Native controller tests cover 1000-app keyboard navigation, scrollbar access to
+the final entry among 10000 apps, independently restored page viewports, long
+scrollable details, framebuffer clipping and 50000 mixed input events.
+The SDK adapter tests use 1000 executable objects and verify the final executable
+mapping, lazy metadata, cached details, 0/Info, Clear, EXE and invalid lift data.
+Empty Recent copies no metadata; only selected apps have details loaded.
 Idle events do not redraw. Description text is rendered without a combined copy.
+The same native renderer produces the included beta previews; they are not
+browser mockups. Build outputs and packages are under dist/beta/.
 
 HH2 checks
 ----------
