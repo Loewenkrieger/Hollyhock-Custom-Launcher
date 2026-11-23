@@ -7,6 +7,7 @@ import struct
 parser = argparse.ArgumentParser()
 parser.add_argument('--variant', choices=['hh2','hh3'], required=True)
 parser.add_argument('--outdir', type=Path, required=True)
+parser.add_argument('--builddir', type=Path, required=True)
 args = parser.parse_args()
 root = Path(__file__).resolve().parents[1]
 version, full, guard = ('2000','02.01.2000.0000',b'2017.0512.1515') if args.variant == 'hh2' else ('7002','02.01.7002.0001',b'2023.0209.1500')
@@ -21,7 +22,7 @@ address = json.loads((root / ('meta/hollyhock-3/versions/v' + full + '/addresses
 assert address['safeGuard'].encode() == guard
 required = {'LCD_GetSize','LCD_GetVRAMAddress','LCD_Refresh','GetInput','MCS_GetVariable','MCS_SetVariable','MCS_CreateFolder','GUI_DisplayMessageBox_Internal'}
 assert required <= {entry['FunctionName'] for entry in address['addresses']}
-prep = (root / ('obj-' + args.variant) / ('addresses.' + version + '.prep')).read_bytes()
+prep = (args.builddir / ('addresses.' + version + '.prep')).read_bytes()
 assert prep in binary and b'HHK_SYMBOL_TABLE=' in binary and b'HHK_SYMBOL_TABLE_LEN=' in binary
 cursor = prep.index(0)+1
 mapping = {}

@@ -48,6 +48,8 @@ Actual SH ELF architecture, entry, image bounds, OS guard and required SDK
 symbols are checked for both variants. MCS enum/byte representation is verified
 from target compiler output. Real HH2 test HHK/BIN load addresses and allocated
 section bytes are cross-checked.
+The target checker uses the build directory passed by make, including in a
+fresh source-only rebuild without any old obj-hh2/obj-hh3 artifacts.
 HH3 additionally runs the narrow instruction consumer against the compiled
 return object/callback and the null-return regression.
 HH2 retains the upstream native OS completion-dialog return path.

@@ -102,7 +102,7 @@ test:
 	$(PYTHON) tools/run_tests.py host --variant $(TARGET) --outdir "$(OUTDIR)"
 
 target-test: launcher smoke
-	$(PYTHON) tools/run_tests.py target --variant $(TARGET) --outdir "$(OUTDIR)"
+	$(PYTHON) tools/run_tests.py target --variant $(TARGET) --outdir "$(OUTDIR)" --builddir "$(BUILDDIR)"
 
 package: launcher smoke
 	$(PYTHON) tools/package.py --variant $(TARGET) --outdir "$(OUTDIR)"

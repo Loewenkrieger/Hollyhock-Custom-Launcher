@@ -13,6 +13,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('suite', choices=['host', 'target'])
 parser.add_argument('--variant', choices=['hh2','hh3'], default='hh3')
 parser.add_argument('--outdir', type=Path, default=root / 'dist')
+parser.add_argument('--builddir', type=Path)
 args = parser.parse_args()
 import os
 os.environ["LAUNCHER_TARGET"] = args.variant
@@ -30,7 +31,9 @@ if args.suite == 'target':
                  'Path(sys.argv[1]), Path(sys.argv[2]), "sh4a_nofpueb-elf-nm")',
                  str(args.outdir / 'run.7002.elf'), str(args.outdir / ('run.' + version + '.bin'))]]
     if args.variant == 'hh2': commands = commands[:1]
-    commands.append([sys.executable, 'tests/test_target.py', '--variant', args.variant, '--outdir', str(args.outdir)])
+    builddir = args.builddir or root / ('obj-beta-' + args.variant)
+    commands.append([sys.executable, 'tests/test_target.py', '--variant', args.variant,
+                     '--outdir', str(args.outdir), '--builddir', str(builddir)])
 args.outdir.mkdir(parents=True, exist_ok=True)
 report = args.outdir / ('tests-' + args.suite + '.json')
 # A failed rerun must not leave a previous success report available to package.
