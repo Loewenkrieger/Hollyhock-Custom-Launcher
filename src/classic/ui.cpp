@@ -301,7 +301,6 @@ void render(Canvas canvas, const State &s, const std::vector<AppInfo> &apps) {
     p.clip = Layout::detail_body; draw_details(p, apps[s.selected], s.detail_scroll); p.clip = {0, 0, 320, 528};
     p.button(Layout::detail_run, "Run app", true, s.visually_pressed(Target::Run));
   } else {
-    p.text({15, 14, 225, 16}, "LOCAL BETA", font::small, muted);
     p.text({15, 35, 225, 24}, "Hollyhock", font::heading);
     p.fill({15, 70, 290, 1}, edge);
     p.panel(Layout::tabs, 17, pale);

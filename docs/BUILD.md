@@ -1,6 +1,6 @@
 # Build und Tests
 
-Dieser lokale Zweig baut `0.7.0-beta.1` mit der Compact-Oberfläche. Es werden keine Dateien auf GitHub hochgeladen. Die Befehle unten erzeugen ausschließlich lokale Builds und Pakete.
+Dieser Zweig baut `0.7.0-beta.1` mit der Compact-Oberfläche. Die Befehle unten erzeugen lokale Builds und Pakete; die Tag-Pipeline veröffentlicht geprüfte Beta-Pakete als GitHub-Vorabversion.
 
 Die gemeinsame Oberfläche liegt unter `src/classic/`. App-Suche, Verlaufsformat und
 UI-Hinweise werden über `src/target.hpp` für HH2 oder HH3 ausgewählt. Die App-Lader
@@ -16,9 +16,9 @@ Die Makefile liest die passende `addresses.json` direkt daraus.
 cd /path/to/extracted-beta-package/source
 ```
 
-Im lokalen Beta-Paket sind die nötigen SDK-Quellen bereits unter `source/`
-enthalten; zum Bauen ist kein Git-Checkout nötig. Im ursprünglichen lokalen
-Repository liegt die Beta auf dem Zweig `codex/design-beta`.
+Im Beta-Paket sind die nötigen SDK-Quellen bereits unter `source/`
+enthalten; zum Bauen ist kein Git-Checkout nötig. Im Repository liegt die Beta
+auf dem Zweig `codex/design-beta`.
 
 Für Hosttests: Linux, Python 3, g++ mit C++23 und ASan/UBSan.
 Für Calculator-Builds zusätzlich `sh4a_nofpueb-elf-g++` 15.2.0 samt Werkzeugen.
@@ -66,7 +66,7 @@ Komplettpaket, `BUILD-hh2.json`/`BUILD-hh3.json` und eine eigene SHA256-Liste.
 Im Komplettpaket heißt der Launcher bereits `run.bin`; beide enthalten den
 vollständigen Quellstand einschließlich SDK und beider OS-Adressdateien.
 
-Für diese Beta werden weder ein Remote-Zweig noch ein Versionstag gepusht. Die vorhandene GitHub-Pipeline wird hier nicht ausgelöst. `tools/release.json` kennzeichnet die Pakete als `local-beta` mit `publish: false`.
+GitHub Actions prüft HH2 und HH3 getrennt und veröffentlicht erst nach erfolgreichen Host- und Zieltests beider Varianten. `tools/release.json` kennzeichnet diese Ausgabe als `beta` mit `prerelease: true`. `tools/publish_release.py` setzt Beta-Releases ausdrücklich als Vorabversion und nicht als neueste stabile Ausgabe. Ein lokaler Paketbau veröffentlicht nichts.
 
 ## HH2-Ladevertrag
 

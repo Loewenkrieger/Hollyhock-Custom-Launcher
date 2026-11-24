@@ -19,8 +19,8 @@ static std::vector<AppInfo> sample(int count) {
   const char *names[] = {"Tetris", "Snake", "2048", "Mandelbrot", "Text Editor"};
   for (int i = 0; i < count; ++i)
     apps.push_back({i < 5 ? names[i] : "Application " + std::to_string(i + 1),
-      "\\fls0\\app" + std::to_string(i + 1) + APP_EXT, "1.0.0", "Example app",
-      "An example application for the local Compact beta.", i < 5});
+      "\\fls0\\app" + std::to_string(i + 1) + APP_EXT, "1.0.0", i == 0 ? "De_Coder" : "Example app",
+      i == 0 ? "A falling-block puzzle game." : "An example application.", i < 5});
   return apps;
 }
 static std::vector<std::uint16_t> pixels(const State &s, const std::vector<AppInfo> &apps) {

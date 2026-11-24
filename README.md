@@ -1,4 +1,4 @@
-# Hollyhock Custom Launcher · local beta
+# Hollyhock Custom Launcher · beta
 
 **0.7.0-beta.1** brings the Compact layout to HH2 and HH3: black and white, rounded controls and a grey frame around the app list.
 
@@ -11,9 +11,9 @@ The launcher opens on **Recent**, with up to five apps. **All apps** is on the r
 
 HH3 apps must support your installed OS. File extensions are case-insensitive.
 
-## Try it locally
+## Try the beta
 
-Build and test with the commands in [Build and tests](docs/BUILD.md). Packages are written to `dist/beta/release/`, separately from the stable builds.
+[HH2 package · OS 2000](https://github.com/Loewenkrieger/Hollyhock-Custom-Launcher/releases/download/v0.7.0-beta.1/hhk2-launcher-0.7.0-beta.1-os2000.zip) · [HH3 package · OS 7002](https://github.com/Loewenkrieger/Hollyhock-Custom-Launcher/releases/download/v0.7.0-beta.1/hhk3-launcher-0.7.0-beta.1-os7002.zip)
 
 1. Choose the package matching your Hollyhock and OS version.
 2. Back up the calculator's existing `run.bin`, then replace it with the `run.bin` from the package. Put apps in the root directory too.
@@ -33,6 +33,6 @@ Without a history, Recent starts empty; open All apps to launch your first app. 
 
 [German guide](docs/README_DE.md) · [Build and tests](docs/BUILD.md) · [Test report](docs/TEST-REPORT.txt)
 
-This is a local beta. Automated checks cover both builds; physical HH2/HH3 testing is still pending.
+This is a beta release. Automated checks cover both builds; physical HH2/HH3 testing is still pending.
 
 Based on [YAL](https://github.com/ClasspadDev/yal), the [Hollyhock SDK](https://github.com/ClasspadDev/hollyhock-3) and the [Hollyhock 2](https://github.com/SnailMath/hollyhock-2) file formats. Earlier ClassPad styling used [CP-Canvas](https://github.com/TheRainbowPhoenix/CP-Canvas) as a reference.

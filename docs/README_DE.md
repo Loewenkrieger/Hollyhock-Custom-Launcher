@@ -1,6 +1,6 @@
 # Hollyhock Custom Launcher 0.7.0-beta.1
 
-Lokale Beta mit Compact-Oberfläche: Schwarz-Weiß, runde Knöpfe und grauer Listenrahmen. Beim Öffnen erscheint Recent mit höchstens fünf zuletzt gestarteten Apps. Rechts liegt All apps mit der vollständigen Liste.
+Beta mit Compact-Oberfläche: Schwarz-Weiß, runde Knöpfe und grauer Listenrahmen. Beim Öffnen erscheint Recent mit höchstens fünf zuletzt gestarteten Apps. Rechts liegt All apps mit der vollständigen Liste.
 
 | Ausgabe | Vorhandenes System | Apps |
 | --- | --- | --- |
@@ -12,7 +12,7 @@ HH3-Apps müssen zur vorhandenen OS-Version passen. Die Schreibweise der Dateien
 ## Installation
 
 1. Die bisherige `run.bin` auf dem PC sichern.
-2. Das passende lokale Paket entpacken: `hhk2-launcher-0.7.0-beta.1-os2000.zip` oder `hhk3-launcher-0.7.0-beta.1-os7002.zip`.
+2. Das passende [Beta-Releasepaket](https://github.com/Loewenkrieger/Hollyhock-Custom-Launcher/releases/tag/v0.7.0-beta.1) entpacken: `hhk2-launcher-0.7.0-beta.1-os2000.zip` oder `hhk3-launcher-0.7.0-beta.1-os7002.zip`.
 3. Die darin ganz oben liegende `run.bin` ins Hauptverzeichnis des Taschenrechner-Laufwerks kopieren und ersetzen.
 4. Apps ebenfalls ins Hauptverzeichnis kopieren. Sicher auswerfen und USB trennen.
 5. Den Launcher wie bisher öffnen. Die Fußzeile zeigt HH2 oder HH3 und `0.7.0-beta.1`.

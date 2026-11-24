@@ -1,5 +1,5 @@
-Hollyhock Custom Launcher 0.7.0-beta.1 - local validation report
-Validation date: 2026-11-23
+Hollyhock Custom Launcher 0.7.0-beta.1 - validation report
+Validation date: 2026-11-24
 
 Targets
 -------
@@ -30,6 +30,9 @@ Empty Recent copies no metadata; only selected apps have details loaded.
 Idle events do not redraw. Description text is rendered without a combined copy.
 The same native renderer produces the included beta previews; they are not
 browser mockups. Build outputs and packages are under dist/beta/.
+The development banner was removed from the launcher header. Version/OS labels
+and the app's own metadata remain available. Release-command checks verify the
+prerelease/non-latest flags and reject disabled publication or missing assets.
 
 HH2 checks
 ----------
